@@ -1,0 +1,73 @@
+"""PyInstaller 构建脚本
+
+用于开发阶段的快速打包。
+
+用法:
+    python scripts/build_pyinstaller.py
+
+输出:
+    dist/rclone-tray/
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DIST_DIR = PROJECT_ROOT / "dist"
+BUILD_DIR = PROJECT_ROOT / "build"
+SPEC_NAME = PROJECT_ROOT / "rclone-tray.spec"
+
+
+def main() -> None:
+    # 确保在项目根目录
+    original_cwd = Path.cwd()
+    try:
+        # 切换到项目根目录
+        __import__("os").chdir(str(PROJECT_ROOT))
+
+        # 构建参数
+        args = [
+            sys.executable or "python",
+            "-m",
+            "PyInstaller",
+            "--name=RcloneTray",
+            "--onefile",           # 单文件 exe
+            "--windowed",          # 无控制台窗口
+            "--noconfirm",
+            "--clean",
+            "--distpath", str(DIST_DIR),
+            "--workpath", str(BUILD_DIR),
+            "--icon=NONE",         # TODO: 添加图标文件
+            "--add-data", f"src{Path('src').sep}rclone_tray{Path('src').sep}resources{Path('src').sep}icons;resources/icons",
+            "--hidden-import", "PySide6.QtCore",
+            "--hidden-import", "PySide6.QtGui",
+            "--hidden-import", "PySide6.QtWidgets",
+            "--hidden-import", "tomli_w",
+            str(PROJECT_ROOT / "src" / "rclone_tray" / "__main__.py"),
+        ]
+
+        print("=" * 60)
+        print("Building Rclone Tray with PyInstaller...")
+        print("=" * 60)
+        print(f"Command: {' '.join(args)}")
+        print()
+
+        result = subprocess.run(args, check=True)
+
+        if result.returncode == 0:
+            print()
+            print("=" * 60)
+            print("✅ Build successful!")
+            print(f"   Output: {DIST_DIR / 'RcloneTray.exe'}")
+            print("=" * 60)
+
+    except subprocess.CalledProcessError as exc:
+        print(f"❌ Build failed with exit code {exc.returncode}")
+        sys.exit(1)
+    finally:
+        __import__("os").chdir(str(original_cwd))
+
+
+if __name__ == "__main__":
+    main()
