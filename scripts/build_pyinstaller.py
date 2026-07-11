@@ -27,6 +27,11 @@ def main() -> None:
         __import__("os").chdir(str(PROJECT_ROOT))
 
         # 构建参数
+        # 使用 os.sep 确保路径分隔符正确
+        import os
+        # PyInstaller 6.x 要求 --add-data 使用等号格式：--add-data=SOURCE:DEST
+        data_path = f"src{os.sep}rclone_tray{os.sep}resources{os.sep}icons:resources{os.sep}icons"
+        
         args = [
             sys.executable or "python",
             "-m",
@@ -39,8 +44,8 @@ def main() -> None:
             "--distpath", str(DIST_DIR),
             "--workpath", str(BUILD_DIR),
             "--icon=NONE",         # TODO: 添加图标文件
-            # 包含资源文件
-            "--add-data", f"src{Path('src').sep}rclone_tray{Path('src').sep}resources{Path('src').sep}icons;resources/icons",
+            # 包含资源文件（注意：Linux 使用:分隔，Windows 使用;分隔）
+            f"--add-data={data_path}",
             # 隐藏导入
             "--hidden-import", "PySide6.QtCore",
             "--hidden-import", "PySide6.QtGui",

@@ -1,11 +1,7 @@
-"""Rclone Tray Windows 启动入口（无控制台窗口）
+"""rclone_tray.pyw - Windows 无控制台模式入口文件
 
-此文件用于 Windows 系统下直接双击启动，不会显示命令行窗口。
-使用 .pyw 扩展名确保 Python 以无控制台模式运行。
-
-用法:
-    双击 rclone_tray.pyw 启动应用
-    或在命令行运行：pythonw.exe rclone_tray.pyw
+使用 .pyw 扩展名确保 Python 以无控制台模式 (pythonw.exe) 运行，
+避免打包后的 EXE 文件显示命令行窗口。
 """
 
 from rclone_tray.main import run
