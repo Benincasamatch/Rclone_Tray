@@ -38,7 +38,7 @@ def main() -> None:
             "--module",
             # 单文件模式
             "--onefile",
-            # 无控制台
+            # 无控制台（关键：防止命令行窗口闪烁）
             "--windows-disable-console",
             # 插件
             "--enable-plugin=pyqt6",
@@ -57,8 +57,8 @@ def main() -> None:
             "--nofollow-import-to=pytest",
             # 优化
             "--remove-output",
-            # 输入
-            str(PROJECT_ROOT / "src" / "rclone_tray" / "__main__.py"),
+            # 输入 - 使用 .pyw 入口文件（Windows 无控制台模式）
+            str(PROJECT_ROOT / "src" / "rclone_tray.pyw"),
         ]
 
         print("=" * 60)

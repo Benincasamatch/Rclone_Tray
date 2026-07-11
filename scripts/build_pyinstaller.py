@@ -33,18 +33,21 @@ def main() -> None:
             "PyInstaller",
             "--name=RcloneTray",
             "--onefile",           # 单文件 exe
-            "--windowed",          # 无控制台窗口
+            "--windowed",          # 无控制台窗口（关键：防止命令行窗口闪烁）
             "--noconfirm",
             "--clean",
             "--distpath", str(DIST_DIR),
             "--workpath", str(BUILD_DIR),
             "--icon=NONE",         # TODO: 添加图标文件
+            # 包含资源文件
             "--add-data", f"src{Path('src').sep}rclone_tray{Path('src').sep}resources{Path('src').sep}icons;resources/icons",
+            # 隐藏导入
             "--hidden-import", "PySide6.QtCore",
             "--hidden-import", "PySide6.QtGui",
             "--hidden-import", "PySide6.QtWidgets",
             "--hidden-import", "tomli_w",
-            str(PROJECT_ROOT / "src" / "rclone_tray" / "__main__.py"),
+            # 使用 .pyw 入口文件（Windows 无控制台模式）
+            str(PROJECT_ROOT / "src" / "rclone_tray.pyw"),
         ]
 
         print("=" * 60)

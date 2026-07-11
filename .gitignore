@@ -1,43 +1,51 @@
-# Python
+```
+# Compiled and build artifacts
+*.pyc
 __pycache__/
-*.py[cod]
-*.pyo
-*.egg-info/
+*.o
+*.obj
 dist/
 build/
-*.egg
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
-# Virtual environments
-venv/
+# Dependencies
 .venv/
-env/
-.env/
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
+.julia/
+zig*/
 
-# IDE
-.vscode/
-.idea/
+# Logs and temp files
+*.log
+*.tmp
 *.swp
 *.swo
 
-# PyInstaller & Nuitka
-*.spec
-*.exe.manifest
+# Environment
+.env
+.env.local
+*.env.*
 
-# OS
-Thumbs.db
+# Editors
+.vscode/
+.idea/
+
+# System files
 .DS_Store
+Thumbs.db
 
-# Logs
-*.log
-
-# Config (user-specific)
-config.toml
-local_config.toml
-
-# Test
-.coverage
+# Coverage
+coverage/
 htmlcov/
-.pytest_cache/
+.coverage
 
-# Project specific
-rclone_tray.ini
+# Build tools
+target/
+.gradle/
+```
