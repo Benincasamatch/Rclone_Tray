@@ -1,2 +1,0 @@
-[console_scripts]
-rclone-tray = rclone_tray.__main__:main
