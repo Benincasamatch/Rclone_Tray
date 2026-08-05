@@ -61,6 +61,29 @@ Process Manager
 Profile Manager
 
 ---
+# Process Manager
+
+职责
+------
+管理底层子进程的生命周期（泛型，不依赖 rclone）
+
+负责
+------
+启动子进程（start）
+停止子进程（stop，超时后强制结束）
+轮询进程状态，记录退出码（refresh）
+提供 PID / 退出码 / 运行状态查询
+
+依赖
+------
+无（系统 API / subprocess）
+
+不会负责
+------
+崩溃检测与自动重启（Watchdog）
+rclone 挂载生命周期与命令构建（Rclone Service）
+
+---
 # Watchdog
 
 职责

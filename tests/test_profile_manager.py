@@ -2,6 +2,7 @@
 
 运行方式：
     python -m unittest -v test_profile_manager.py
+    （需要将 src/rclone_tray 加入 sys.path 或 PYTHONPATH）
 """
 
 from __future__ import annotations
@@ -11,7 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import profile_manager
+from ProfileManager import Profile_Manager as profile_manager
 
 
 class ProfileManagerTests(unittest.TestCase):

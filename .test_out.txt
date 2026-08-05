@@ -1,0 +1,19 @@
+test_check_crash_detects_unexpected_exit (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_check_crash_detects_unexpected_exit)
+测试 check_crash 检测到意外退出。 ... ok
+test_check_crash_false_after_manual_stop (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_check_crash_false_after_manual_stop)
+测试主动停止后不视为崩溃。 ... ok
+test_check_crash_false_while_running (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_check_crash_false_while_running)
+测试进程正常运行时 check_crash 返回 False。 ... ok
+test_max_retries_reached_raises (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_max_retries_reached_raises)
+测试超过最大重试次数后抛出 WatchdogError。 ... ok
+test_restart_starts_new_process_and_increments_retry (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_restart_starts_new_process_and_increments_retry)
+测试 restart 启动新进程并递增重试次数。 ... ok
+test_run_auto_restarts_until_stop (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_run_auto_restarts_until_stop)
+测试 run() 监控循环检测崩溃并自动重启，直到 stop()。 ... ok
+test_run_stops_after_max_retries (RcloneService.Watchdog.test_watchdog.WatchdogTests.test_run_stops_after_max_retries)
+测试 run() 超过重试上限后抛出 WatchdogError 并停止监控。 ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.044s
+
+OK
