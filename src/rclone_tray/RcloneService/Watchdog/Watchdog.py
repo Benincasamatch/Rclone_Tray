@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import time
 
-from RcloneService.Rclone_Service import LifecycleState, MountInfo, RcloneService
+from MountManager.Mount_Manager import LifecycleState, MountInfo
+from RcloneService.Rclone_Service import RcloneService
 
 
 class WatchdogError(RuntimeError):

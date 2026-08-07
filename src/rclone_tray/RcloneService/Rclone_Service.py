@@ -1,6 +1,7 @@
 """Rclone 挂载生命周期服务。
 
-该模块负责启动和管理一个 rclone mount 进程。Profile 数据默认从 ``ProfileManager``读取，也可以通过 ``profile_provider`` 注入，便于测试和后续解耦。
+该模块负责启动和管理一个 rclone mount 进程。Profile 数据默认从 ``ProfileManager`` 读取，也可以通过
+``profile_provider`` 注入，便于测试和后续解耦。
 
 泛型的子进程生命周期管理（创建、停止、轮询、PID/退出码跟踪）已剥离至 ``ProcessManager``，
 本模块通过注入的 ``ProcessManager`` 实例操作底层进程，专注于 rclone 特有的
@@ -9,47 +10,21 @@ profile 校验、命令构建、生命周期状态与事件通知。
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import Enum
 import os
-from pathlib import Path
 import subprocess
 from typing import Any, Callable, Mapping, Optional, Sequence
 
+from MountManager.Mount_Manager import LifecycleState, MountInfo, MountManager
 from ProcessManager.Process_Manager import ProcessManager
 
 
-class LifecycleState(str, Enum):
-    """rclone mount 的生命周期状态。"""
-
-    CONFIGURED = "configured"
-    STARTING = "starting"
-    MOUNTED = "mounted"
-    STOPPING = "stopping"
-    STOPPED = "stopped"
-    RESTARTING = "restart"
-    ERROR = "error"
-
-
-@dataclass(frozen=True)# frozen=True 对象创建后不可变
-class MountInfo:
-    """当前进程和挂载配置的只读快照。"""
-
-    state: LifecycleState
-    profile_id: str | None
-    remote: str | None
-    mount_point: str | None
-    pid: int | None
-    exit_code: int | None
-
-
-class RcloneServiceError(RuntimeError): # 表示 Rclone 服务操作失败
+class RcloneServiceError(RuntimeError):
     """Rclone 服务操作失败。"""
 
-ProfileProvider = Callable[[], Optional[Mapping[str, Any]]] # 不接受参数，返回当前的 Profile 字典或 None
-StateListener = Callable[[MountInfo], None] # 状态监听器，接受 MountInfo 对象作为参数，无返回值
-ErrorListener = Callable[[Exception], None] # 错误监听器，接受 Exception 对象作为参数，无返回值
-"""使用typing.Callable定义函数类型，指定参数和返回值类型。"""
+
+ProfileProvider = Callable[[], Optional[Mapping[str, Any]]]
+StateListener = Callable[[MountInfo], None]
+ErrorListener = Callable[[Exception], None]
 
 
 class RcloneService:
@@ -58,6 +33,7 @@ class RcloneService:
     _listeners: list[StateListener]
     _error_listeners: list[ErrorListener]
     _process_manager: ProcessManager
+    _mount_manager: MountManager
     _profile: Mapping[str, Any] | None
     _state: LifecycleState
 
@@ -88,10 +64,15 @@ class RcloneService:
         self._process_manager = process_manager or ProcessManager()
         self._profile: Mapping[str, Any] | None = None
         self._state = LifecycleState.STOPPED
-        self._listeners: list[StateListener] = []
-        self._error_listeners: list[ErrorListener] = []
+        self._mount_manager = MountManager(
+            profile_provider=lambda: self._profile,
+            state_provider=lambda: self._state,
+            process_manager=self._process_manager,
+        )
+        self._listeners = []
+        self._error_listeners = []
 
-    @staticmethod # 静态方法，不依赖于类实例
+    @staticmethod
     def _load_current_profile() -> Mapping[str, Any] | None:
         """从 ProfileManager 获取当前 Profile。"""
         from ProfileManager.Profile_Manager import get_current_profile
@@ -135,51 +116,27 @@ class RcloneService:
         return self._process_manager.exit_code
 
     def get_mount_info(self) -> MountInfo:
-        """返回完整只读状态快照，包括
-            生命周期状态
-            Profile ID
-            rclone 配置
-            挂载点
-            进程 PID
-            退出码
-        """
+        """返回完整只读状态快照。"""
         self.refresh_status()
-        profile = self._profile
-        return MountInfo(
-            state=self._state,
-            profile_id=self._value(profile, "id"),
-            remote=self._value(profile, "rclone_route"),
-            mount_point=self._value(profile, "mount-drive"),
-            pid=self._process_manager.pid,
-            exit_code=self._process_manager.exit_code,
-        )
+        return self._mount_manager.get_mount_info()
 
     def check_status(self) -> MountInfo:
         """刷新并返回当前挂载状态。"""
         return self.get_mount_info()
 
     def start(self) -> MountInfo:
-        """使用当前 Profile 启动 rclone mount。
-        主要流程：
-            1. 检查当前是否已有 rclone mount 进程在运行。
-            2. 获取当前 Profile 并验证其合法性。
-            3. 构建 rclone mount 命令并启动子进程。
-                组装命令：rclone mount <rclone_route> <mount-drive> <extra_args>
-        """
+        """使用当前 Profile 启动 rclone mount。"""
         self.refresh_status()
         if self._process_manager.is_running:
             raise RcloneServiceError("rclone mount is already running")
 
         profile = self._profile_provider()
         self._validate_profile(profile)
-        # Normalize profile to a mapping[str, Any] or None to satisfy type checkers
         if profile is None:
             self._profile = None
         else:
-            # Ensure keys are str (some sources may provide bytes keys)
             self._profile = {str(k): v for k, v in profile.items()}
         self._set_state(LifecycleState.STARTING)
-        # Use the normalized self._profile which is guaranteed to be a mapping or None
         if self._profile is None:
             err = RcloneServiceError("no profile available to start rclone")
             self._notify_error(err)
@@ -216,22 +173,11 @@ class RcloneService:
         return self.get_mount_info()
 
     def refresh_status(self) -> LifecycleState:
-        """同步子进程状态。
-
-        仅负责更新进程退出的原始事实（退出码），不做崩溃判定。
-        进程意外退出（crash detection）的识别与自动重启由 Watchdog 负责。
-        """
+        """同步子进程状态。"""
         info = self._process_manager.refresh()
-        # 主动停止流程：正常过渡到 STOPPED；否则保持原状态，由 Watchdog 判定崩溃
         if self._state == LifecycleState.STOPPING and not info.is_running:
             self._set_state(LifecycleState.STOPPED)
         return self._state
-
-    @staticmethod
-    def _value(profile: Mapping[str, Any] | None, key: str) -> str | None:
-        """从 Profile 中获取指定键的值，如果不存在则返回 None。"""
-        value = profile.get(key) if profile else None
-        return str(value) if value is not None else None
 
     @staticmethod
     def _validate_profile(profile: Mapping[str, Any] | None) -> None:
@@ -245,14 +191,7 @@ class RcloneService:
     def _set_state(self, state: LifecycleState) -> None:
         """设置当前生命周期状态并通知所有状态监听器。"""
         self._state = state
-        info = MountInfo(
-            state=state,
-            profile_id=self._value(self._profile, "id"),
-            remote=self._value(self._profile, "rclone_route"),
-            mount_point=self._value(self._profile, "mount-drive"),
-            pid=self._process_manager.pid,
-            exit_code=self._process_manager.exit_code,
-        )
+        info = self._mount_manager.get_mount_info()
         for listener in tuple(self._listeners):
             listener(info)
 
@@ -266,6 +205,7 @@ class RcloneService:
 Public API
     LifecycleState:rclone mount 的生命周期状态
     MountInfo:当前进程和挂载配置的只读快照
+    MountManager:组装并返回 rclone 挂载的只读快照
     RcloneService:管理 rclone mount 子进程及其生命周期事件
     RcloneServiceError:表示 rclone 服务相关错误的异常类
 
@@ -279,6 +219,7 @@ Public API
 __all__ = [
     "LifecycleState",
     "MountInfo",
+    "MountManager",
     "RcloneService",
     "RcloneServiceError",
 ]
