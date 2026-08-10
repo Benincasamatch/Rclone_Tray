@@ -62,7 +62,9 @@ def main() -> None:
     # 开机自动挂载（延迟等待网络/服务就绪）
     if cfg.auto_mount_on_boot and pm.mounts:
         delay = max(int(cfg.mount_delay_seconds), 0)
-        threading.Timer(delay, pm.start_all_mounts, name="auto-mount").start()
+        timer = threading.Timer(delay, pm.start_all_mounts)
+        timer.name = "auto-mount"
+        timer.start()
         logging.info("已安排自动挂载（延迟 %ds）", delay)
 
     # 自动启动 GUI

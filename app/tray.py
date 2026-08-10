@@ -8,33 +8,65 @@ import webbrowser
 from typing import Optional
 
 import pystray
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from pystray import Menu, MenuItem
+
+try:  # Pillow 9.1+ 枚举写法，兼容旧版本
+    _RESAMPLE = Image.Resampling.LANCZOS
+except AttributeError:
+    _RESAMPLE = Image.LANCZOS
 
 from core import startup as startup_mod
 from core.config import AppConfig, config_path, find_rclone_conf, save_config
 from core.processes import ProcessManager
 from core.rclone import get_version
 
+from app.notification import notify
+
 GREEN = (46, 160, 67)
 GRAY = (120, 120, 120)
 ORANGE = (217, 119, 6)
 
 
+def _resource_path(rel: str) -> str:
+    """打包解包目录（sys._MEIPASS）或源码根目录下的资源绝对路径。"""
+    base = getattr(sys, "_MEIPASS", None)
+    if base is None:
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, rel)
+
+
+def _load_base_icon() -> Image.Image:
+    """加载 assets/icon.ico 作为托盘图标基底（放缩到 64x64 保持清晰）。"""
+    img = Image.open(_resource_path(os.path.join("assets", "icon.ico"))).convert("RGBA")
+    return img.resize((64, 64), _RESAMPLE)
+
+
+def _status_badge(img: Image.Image, color: tuple) -> Image.Image:
+    """在图标右下角叠加状态圆点：绿=运行 / 灰=停止 / 橙=警告。"""
+    out = img.copy()
+    d = ImageDraw.Draw(out)
+    size = out.width
+    r = max(6, size // 9)
+    pad = max(2, size // 16)
+    x1, y1 = size - 2 * r - pad, size - 2 * r - pad
+    x2, y2 = size - pad, size - pad
+    d.ellipse(
+        [x1, y1, x2, y2],
+        fill=color,
+        outline=(255, 255, 255, 255),
+        width=max(2, size // 24),
+    )
+    return out
+
+
 def _make_icon(color: tuple) -> Image.Image:
+    """回退方案：图标资源缺失时绘制圆角方块 + 状态圆点。"""
     size = 64
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle([2, 2, size - 2, size - 2], radius=16, fill=color)
-    try:
-        font = ImageFont.truetype("arialbd.ttf", 40)
-    except Exception:
-        try:
-            font = ImageFont.truetype("arial.ttf", 40)
-        except Exception:
-            font = ImageFont.load_default()
-    d.text((size / 2, size / 2), "R", font=font, fill="white", anchor="mm")
-    return img
+    d.rounded_rectangle([2, 2, size - 2, size - 2], radius=16, fill=(80, 80, 80))
+    return _status_badge(img, color)
 
 
 class TrayApp:
@@ -47,9 +79,15 @@ class TrayApp:
         self.icon: Optional[pystray.Icon] = None
         self.script = os.path.abspath(sys.argv[0])
         self.version = get_version(cfg.rclone_path) if cfg.rclone_path else None
-        self._img_run = _make_icon(GREEN)
-        self._img_stop = _make_icon(GRAY)
-        self._img_warn = _make_icon(ORANGE)
+        try:
+            base = _load_base_icon()
+            self._img_run = _status_badge(base, GREEN)
+            self._img_stop = _status_badge(base, GRAY)
+            self._img_warn = _status_badge(base, ORANGE)
+        except Exception:
+            self._img_run = _make_icon(GREEN)
+            self._img_stop = _make_icon(GRAY)
+            self._img_warn = _make_icon(ORANGE)
         self._last_sig: Optional[tuple] = None
 
     # ---------- 生命周期 ----------
@@ -63,6 +101,7 @@ class TrayApp:
         self.monitor.on_update = self.refresh
         self.monitor.start()
         self.refresh(force=True)
+        notify("rclone_tray", "程序已在托盘中运行")
         self.icon.run()
         self.monitor.stop()
 
@@ -136,6 +175,13 @@ class TrayApp:
 
     def _build_mount_menu(self) -> Menu:
         pm = self.pm
+
+        def make_toggle(mid: str):
+            def toggle(icon, item) -> None:
+                self._toggle_mount(mid)
+
+            return toggle
+
         items = []
         if not pm.mounts:
             items.append(MenuItem("（暂无挂载，点击下方添加）", None, enabled=False))
@@ -146,7 +192,7 @@ class TrayApp:
                 items.append(
                     MenuItem(
                         f"{mark} {m.name} → {m.mount_point}",
-                        lambda icon, item, mid=mid: self._toggle_mount(mid),
+                        make_toggle(mid),
                         checked=lambda item, mid=mid: pm.mount_running(mid),
                     )
                 )
