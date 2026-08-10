@@ -1,2 +1,0 @@
-E:\items\nether\scripts\rclone_tray
-['', 'E:\\tools\\miniconda3\\python313.zip', 'E:\\tools\\miniconda3\\DLLs']

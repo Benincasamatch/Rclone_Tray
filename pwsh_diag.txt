@@ -1,6 +1,0 @@
-PSVersion=7.6.4
-OutputRendering=Host
-FG=Gray;BG=Black
-WriteOutputCmd=Cmdlet:Microsoft.PowerShell.Utility
-OutDefaultCmd=Cmdlet:Microsoft.PowerShell.Core
-PromptFnExists=True
