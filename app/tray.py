@@ -72,10 +72,11 @@ def _make_icon(color: tuple) -> Image.Image:
 class TrayApp:
     """托盘应用：管理图标、动态菜单与刷新。"""
 
-    def __init__(self, cfg: AppConfig, pm: ProcessManager, monitor):
+    def __init__(self, cfg: AppConfig, pm: ProcessManager, monitor, notify_on_start: bool = True):
         self.cfg = cfg
         self.pm = pm
         self.monitor = monitor
+        self.notify_on_start = notify_on_start
         self.icon: Optional[pystray.Icon] = None
         self.script = os.path.abspath(sys.argv[0])
         self.version = get_version(cfg.rclone_path) if cfg.rclone_path else None
@@ -101,7 +102,9 @@ class TrayApp:
         self.monitor.on_update = self.refresh
         self.monitor.start()
         self.refresh(force=True)
-        notify("rclone_tray", "程序已在托盘中运行")
+        # 仅在用户手动打开时提示，开机自启时保持安静
+        if self.notify_on_start:
+            notify("rclone_tray", "程序已在托盘中启动，点击托盘图标进行管理。")
         self.icon.run()
         self.monitor.stop()
 
@@ -216,8 +219,18 @@ class TrayApp:
         self.refresh(force=True)
 
     def _open_gui_web(self, icon, item) -> None:
-        if self.pm.gui is not None:
-            webbrowser.open(self.pm.gui.url())
+        gui = self.pm.gui
+        if gui is None:
+            return
+        if not gui.running():
+            notify("rclone_tray", "rclone GUI 未运行，请先启动。")
+            return
+        # url() 会等待 rclone 写出本次监听地址，避免阻塞菜单线程时放到子线程执行
+        threading.Thread(
+            target=lambda: webbrowser.open(gui.url()),
+            daemon=True,
+            name="open-gui-web",
+        ).start()
 
     def _open_conf_dir(self, icon, item) -> None:
         conf = find_rclone_conf()

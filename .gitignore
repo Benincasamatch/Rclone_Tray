@@ -14,9 +14,21 @@ build/
 # 第三方二进制（体积大，不纳入版本控制，自行放置）
 rclone/
 
-# 运行数据
+# 运行数据 / 日志（可能含 rclone GUI 登录地址中的密码、远端名称等敏感信息）
 logs/
+*.log
+*.log.*
 config.json
+
+# rclone 自身配置与凭据（含 token、密码，切勿提交）
+*.conf
+!*.example.conf
+
+# 本地诊断 / 临时输出
+*diag*.txt
+.test_out.txt
+_tmp_*
+*.tmp
 
 # IDE
 .idea/

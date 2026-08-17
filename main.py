@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 import threading
 
 from app.tray import TrayApp
@@ -54,10 +55,15 @@ def main() -> None:
         logging.warning("未找到 rclone，请在设置中指定路径")
 
     cfg.startup_enabled = startup_mod.is_enabled()
+    # 手动启动（非开机自启）时才弹出托盘提示
+    autostart = startup_mod.is_autostart_launch()
+    if cfg.startup_enabled:
+        # 旧版本写入的 Run 项没有 --autostart 标记，顺带升级
+        startup_mod.refresh(sys.argv[0])
 
     pm = ProcessManager(cfg)
     monitor = Monitor(poll_interval=3.0)
-    tray = TrayApp(cfg, pm, monitor)
+    tray = TrayApp(cfg, pm, monitor, notify_on_start=not autostart)
 
     # 开机自动挂载（延迟等待网络/服务就绪）
     if cfg.auto_mount_on_boot and pm.mounts:
