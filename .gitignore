@@ -30,6 +30,15 @@ config.json
 _tmp_*
 *.tmp
 
+# 在项目根执行 pip 时产生的临时目录
+pip-build-env-*/
+pip-build-tracker-*/
+pip-ephem-wheel-cache-*/
+pip-install-*/
+pip-metadata-*/
+pip-modern-metadata-*/
+pip-unpack-*/
+
 # IDE
 .idea/
 .vscode/

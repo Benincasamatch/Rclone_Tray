@@ -1,0 +1,35 @@
+{
+  "dialog_actions": [
+    [
+      ".confirmation.!frame.no",
+      false
+    ],
+    [
+      ".confirmation.!frame.yes",
+      true
+    ],
+    [
+      ".!toplevel.confirmation.!frame.no",
+      false
+    ],
+    [
+      ".!toplevel.confirmation.!frame.yes",
+      true
+    ],
+    [
+      ".confirmation.!frame.yes",
+      true
+    ],
+    [
+      ".confirmation.!frame.yes",
+      true
+    ]
+  ],
+  "keep_dirty": true,
+  "discard_dirty": true,
+  "modal_keep_discard_focus": true,
+  "empty_text": "还没有挂载。添加挂载前请先配置真实 remote 和 WinFsp。",
+  "theme_draft_discard": true,
+  "exit_requested": true,
+  "ok": true
+}

@@ -1,0 +1,67 @@
+{
+  "mount_read": "packaged end to end proof",
+  "gui_pid": 29228,
+  "main_pid": 18652,
+  "embedded_rclone": true,
+  "window_size": [
+    1175,
+    950
+  ],
+  "close_hides": true,
+  "tray_windows": 2,
+  "tray_reopens": true,
+  "top_row_controls": [
+    [
+      532962,
+      717,
+      268,
+      773,
+      308
+    ],
+    [
+      598512,
+      778,
+      268,
+      886,
+      308
+    ],
+    [
+      859620,
+      891,
+      268,
+      947,
+      308
+    ],
+    [
+      1252824,
+      952,
+      268,
+      1056,
+      308
+    ],
+    [
+      461712,
+      1606,
+      269,
+      1729,
+      306
+    ],
+    [
+      527218,
+      1737,
+      269,
+      1860,
+      306
+    ]
+  ],
+  "chosen_quit_control": [
+    461712,
+    1606,
+    269,
+    1729,
+    306
+  ],
+  "exit_code": 0,
+  "mount_gone": true,
+  "ok": true
+}

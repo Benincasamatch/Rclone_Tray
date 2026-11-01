@@ -1,0 +1,21 @@
+{
+  "failed_commit": {
+    "kind": "result",
+    "key": "settings",
+    "action": "save_settings",
+    "ok": false,
+    "message": "原子保存应用配置失败（系统错误 None）。请检查路径、权限和文件占用；原配置未被重置。"
+  },
+  "failure_registry_rolled_back": true,
+  "enable": {
+    "kind": "result",
+    "key": "settings",
+    "action": "save_settings",
+    "ok": true,
+    "message": "设置已保存；现有运行实例未重新启动。"
+  },
+  "registry_readback": true,
+  "saved_startup": true,
+  "ok": true,
+  "original_restored": true
+}

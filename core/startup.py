@@ -37,18 +37,6 @@ def enable(script_path: str) -> None:
         winreg.CloseKey(key)
 
 
-def refresh(script_path: str) -> None:
-    """已启用自启时，把旧版（缺少 --autostart 标记）的 Run 项升级为新命令。"""
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_READ)
-        try:
-            current, _ = winreg.QueryValueEx(key, VALUE_NAME)
-        finally:
-            winreg.CloseKey(key)
-    except FileNotFoundError:
-        return
-    if AUTOSTART_FLAG not in str(current):
-        enable(script_path)
 
 
 def disable() -> None:
@@ -61,14 +49,24 @@ def disable() -> None:
     except FileNotFoundError:
         pass
 
+def read_entry() -> tuple[object, int] | None:
+    """Read the exact value/type so failed transactions can restore user state."""
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_READ) as key:
+            return winreg.QueryValueEx(key, VALUE_NAME)
+    except FileNotFoundError:
+        return None
+
+
+def restore_entry(entry: tuple[object, int] | None) -> None:
+    if read_entry() == entry:
+        return
+    if entry is None:
+        disable()
+        return
+    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_SET_VALUE) as key:
+        winreg.SetValueEx(key, VALUE_NAME, 0, entry[1], entry[0])
+
 
 def is_enabled() -> bool:
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_READ)
-        try:
-            winreg.QueryValueEx(key, VALUE_NAME)
-        finally:
-            winreg.CloseKey(key)
-        return True
-    except FileNotFoundError:
-        return False
+    return read_entry() is not None

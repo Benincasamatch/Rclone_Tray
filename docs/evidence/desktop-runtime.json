@@ -1,0 +1,26 @@
+{
+  "mount_state": {
+    "state": "ready",
+    "message": "已就绪",
+    "pid": 34308,
+    "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_visual_acceptance\\data\\logs\\mount-ffc835e613ee.log"
+  },
+  "read": "visual mount proof",
+  "gui_state": {
+    "state": "ready",
+    "message": "已就绪",
+    "pid": 9968,
+    "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_visual_acceptance\\data\\logs\\gui.log"
+  },
+  "tray_visible": true,
+  "tray_title": "rclone_tray · GUI 就绪 · 挂载 1/1",
+  "shutdown": {
+    "kind": "result",
+    "key": "shutdown",
+    "action": "shutdown",
+    "ok": true,
+    "message": "已完成 2 项。"
+  },
+  "ok": true,
+  "mount_gone": true
+}

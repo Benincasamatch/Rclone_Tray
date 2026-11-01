@@ -9,8 +9,9 @@ a = Analysis(
         ("rclone", "rclone"),          # 内置 rclone.exe
         ("docs", "docs"),              # 计划文档
         ("assets/icon.ico", "assets"), # 图标资源
+        ("LICENSE", "."),
     ],
-    hiddenimports=["pystray._win32"],
+    hiddenimports=["pystray._win32", "PIL.ImageTk", "PIL.ImageDraw", "plyer.platforms.win.notification"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -30,7 +31,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,

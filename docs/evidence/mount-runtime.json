@@ -1,0 +1,71 @@
+{
+  "winfsp": true,
+  "auto": {
+    "9a960367ac06": {
+      "state": "ready",
+      "message": "已就绪",
+      "pid": 26932,
+      "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-9a960367ac06.log"
+    }
+  },
+  "first_read": "verified local mount",
+  "retained_pid": 26932,
+  "active_change_rejected": true,
+  "network_mount": {
+    "state": "ready",
+    "message": "已就绪",
+    "pid": 20792,
+    "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-b5b806f5e6b1.log"
+  },
+  "network_read": "verified local mount",
+  "stops": {
+    "gui": {
+      "state": "stopped",
+      "message": "已停止并确认退出",
+      "pid": null,
+      "log_path": ""
+    },
+    "9a960367ac06": {
+      "state": "stopped",
+      "message": "已停止并确认退出",
+      "pid": null,
+      "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-9a960367ac06.log"
+    },
+    "b5b806f5e6b1": {
+      "state": "stopped",
+      "message": "已停止并确认退出",
+      "pid": null,
+      "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-b5b806f5e6b1.log"
+    }
+  },
+  "drives_gone": true,
+  "directory_mount": {
+    "state": "ready",
+    "message": "已就绪",
+    "pid": 27520,
+    "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-04b1242c1eea.log"
+  },
+  "directory_read": "verified local mount",
+  "directory_stop": {
+    "state": "stopped",
+    "message": "已停止并确认退出",
+    "pid": null,
+    "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-04b1242c1eea.log"
+  },
+  "placeholder_restored": true,
+  "ok": true,
+  "final_cleanup": {
+    "gui": {
+      "state": "stopped",
+      "message": "已停止并确认退出",
+      "pid": null,
+      "log_path": ""
+    },
+    "04b1242c1eea": {
+      "state": "stopped",
+      "message": "已停止并确认退出",
+      "pid": null,
+      "log_path": "E:\\items\\nether\\projects\\rclone_tray\\_tmp_elevated_mount\\data\\logs\\mount-04b1242c1eea.log"
+    }
+  }
+}

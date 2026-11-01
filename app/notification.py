@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import ctypes
-import os
-import sys
 import threading
 from typing import Any
+
+from core.resources import icon_path
 
 APP_NAME = "rclone_tray"
 
@@ -14,20 +14,6 @@ try:
     from plyer import notification as _notify_api
 except Exception:  # pragma: no cover - plyer 未安装时静默降级
     _notify_api = None
-
-
-def _resource_path(rel: str) -> str:
-    """打包解包目录（sys._MEIPASS）或源码根目录下的资源绝对路径。"""
-    base = getattr(sys, "_MEIPASS", None)
-    if base is None:
-        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base, rel)
-
-
-def _default_icon() -> str:
-    """程序图标 assets/icon.ico 的绝对路径；文件不存在时返回空串。"""
-    p = _resource_path(os.path.join("assets", "icon.ico"))
-    return p if os.path.exists(p) else ""
 
 
 def notify(title: str = APP_NAME, message: str = "", timeout: int = 5) -> None:
@@ -41,7 +27,7 @@ def notify(title: str = APP_NAME, message: str = "", timeout: int = 5) -> None:
         return
     threading.Thread(
         target=_show,
-        args=(title, message, max(int(timeout), 3), _default_icon()),
+        args=(title, message, max(int(timeout), 3), icon_path()),
         daemon=True,
         name="native-notify",
     ).start()

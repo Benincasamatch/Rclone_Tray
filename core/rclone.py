@@ -1,4 +1,4 @@
-"""rclone 可执行文件定位与版本解析。"""
+"""rclone executable discovery, validated version output, and WinFsp evidence."""
 from __future__ import annotations
 
 import os
@@ -9,7 +9,6 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-# 常见安装目录（%ProgramFiles% 等会在运行时展开）
 SEARCH_DIRS = [
     r"%ProgramFiles%\rclone",
     r"%ProgramFiles(x86)%\rclone",
@@ -23,80 +22,92 @@ SEARCH_DIRS = [
 ]
 
 
-def expand(p: str) -> str:
-    return os.path.expandvars(os.path.expanduser(p))
+def expand(path: str) -> str:
+    return os.path.expandvars(os.path.expanduser(path))
 
 
 def _script_dir() -> str:
-    """主脚本/可执行文件所在目录（支持源码运行与 PyInstaller 打包）。"""
-    try:
-        return os.path.dirname(os.path.abspath(sys.argv[0]))
-    except Exception:
-        return os.getcwd()
+    if getattr(sys, "frozen", False):
+        return str(Path(sys.executable).resolve().parent)
+    return str(Path(__file__).resolve().parent.parent)
 
 
 def _bundle_dir() -> str:
-    """PyInstaller 解包资源目录；源码运行时即脚本目录。"""
-    if getattr(sys, "frozen", False):
-        return getattr(sys, "_MEIPASS", _script_dir())
-    return _script_dir()
+    return str(getattr(sys, "_MEIPASS", _script_dir()))
 
 
 def _candidates() -> list[str]:
-    cands: list[str] = []
-    # 项目自带：打包解包目录 或 源码目录 中的 rclone\rclone.exe
-    cands.append(os.path.join(_bundle_dir(), "rclone", "rclone.exe"))
+    candidates = []
     if getattr(sys, "frozen", False):
-        # 打包后也允许用 exe 旁的 rclone 目录覆盖
-        cands.append(os.path.join(_script_dir(), "rclone", "rclone.exe"))
-    # PATH
-    w = shutil.which("rclone")
-    if w:
-        cands.append(w)
-    for d in SEARCH_DIRS:
-        cands.append(os.path.join(expand(d), "rclone.exe"))
-    return cands
+        candidates.extend([str(Path(_script_dir()) / "rclone.exe"),
+                           str(Path(_script_dir()) / "rclone" / "rclone.exe")])
+    candidates.extend([str(Path(_bundle_dir()) / "rclone" / "rclone.exe"),
+                       str(Path(_bundle_dir()) / "rclone.exe")])
+    on_path = shutil.which("rclone")
+    if on_path:
+        candidates.append(on_path)
+    candidates.extend(str(Path(expand(directory)) / "rclone.exe") for directory in SEARCH_DIRS)
+    return list(dict.fromkeys(candidates))
 
 
 def find_rclone(preferred: str = "") -> Optional[str]:
-    """按优先级查找 rclone.exe；preferred 为用户配置/手动指定的路径。"""
-    if preferred and preferred.strip():
-        p = Path(expand(preferred.strip()))
-        if p.is_file():
-            return str(p)
-    for c in _candidates():
-        p = Path(c)
-        if p.is_file():
-            return str(p)
+    """Explicit invalid paths never silently select a different executable."""
+    if preferred:
+        path = Path(expand(preferred))
+        return str(path.resolve()) if path.is_file() else None
+    for candidate in _candidates():
+        path = Path(candidate)
+        if path.is_file():
+            return str(path.resolve())
     return None
 
 
 def parse_version(text: str) -> Optional[str]:
-    m = re.search(r"rclone v([\d.]+)", text)
-    return m.group(1) if m else None
+    match = re.search(r"(?m)^rclone v(\d+\.\d+(?:\.\d+)?)(?:[-+][^\s]+)?\s*$", text)
+    return match.group(1) if match else None
 
 
-def version_tuple(version: Optional[str]) -> tuple:
-    try:
-        return tuple(int(x) for x in version.split(".")[:2]) if version else (0, 0)
-    except Exception:
+def version_tuple(version: Optional[str]) -> tuple[int, int]:
+    if not version:
         return (0, 0)
-
-
-def get_version(exe: str) -> Optional[str]:
-    """运行 `rclone version` 并解析版本号。"""
-    try:
-        r = subprocess.run(
-            [exe, "version"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-            creationflags=subprocess.CREATE_NO_WINDOW,
-        )
-        return parse_version(r.stdout + r.stderr)
-    except Exception:
-        return None
+    match = re.fullmatch(r"(\d+)\.(\d+)(?:\.\d+)?", version)
+    return (int(match[1]), int(match[2])) if match else (0, 0)
 
 
 def no_window_flag() -> int:
     return getattr(subprocess, "CREATE_NO_WINDOW", 0)
+
+
+def get_version(exe: str) -> Optional[str]:
+    """Only a real, successful rclone version response is accepted."""
+    if not exe or not Path(exe).is_file():
+        return None
+    try:
+        result = subprocess.run([exe, "version"], capture_output=True, text=True,
+                                encoding="utf-8", errors="replace", timeout=15,
+                                creationflags=no_window_flag(), shell=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return parse_version(result.stdout) if result.returncode == 0 else None
+
+
+def winfsp_installed() -> bool:
+    """Look for the native WinFsp runtime; a guessed install directory is not evidence."""
+    if os.name != "nt":
+        return False
+    import winreg
+    roots: list[Path] = []
+    for view in (winreg.KEY_WOW64_64KEY, winreg.KEY_WOW64_32KEY):
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WinFsp", 0,
+                                winreg.KEY_READ | view) as key:
+                directory, kind = winreg.QueryValueEx(key, "InstallDir")
+                if kind in (winreg.REG_SZ, winreg.REG_EXPAND_SZ) and directory:
+                    roots.append(Path(expand(directory)))
+        except OSError:
+            pass
+    for variable in ("ProgramFiles(x86)", "ProgramFiles"):
+        if os.environ.get(variable):
+            roots.append(Path(os.environ[variable]) / "WinFsp")
+    runtime = "winfsp-x64.dll" if sys.maxsize > 2**32 else "winfsp-x86.dll"
+    return any((root / "bin" / runtime).is_file() for root in roots)
