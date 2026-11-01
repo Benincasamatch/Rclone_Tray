@@ -160,7 +160,7 @@ class MountConfig:
 @dataclass
 class AppConfig:
     rclone_path: str = ""
-    gui_no_auth: bool = True
+    gui_no_auth: bool = False
     gui_user: str = field(default="", repr=False)
     gui_pass: str = field(default="", repr=False)
     gui_auto_start: bool = False

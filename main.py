@@ -63,28 +63,35 @@ def main() -> None:
             window.show()
 
         def pump():
-            for event in controller.drain_events():
-                if event.get("kind") == "navigate":
-                    page = event.get("page", "mounts")
-                    if page == "exit":
-                        window.request_exit()
+            try:
+                for event in controller.drain_events():
+                    if event.get("kind") == "navigate":
+                        page = event.get("page", "mounts")
+                        if page == "exit":
+                            window.request_exit()
+                        else:
+                            window.show(page=page, mount_id=event.get("mount_id", ""))
                     else:
-                        window.show(page=page, mount_id=event.get("mount_id", ""))
-                else:
-                    window.handle_event(event)
-                    if not event.get("ok") and root.state() == "withdrawn":
-                        notify("rclone_tray", "操作未完成；请打开托盘中的挂载管理查看原因。")
-                    if event.get("key") == "shutdown" and event.get("ok"):
-                        tray.stop()
-                        controller.close_executor()
-                        root.destroy()
-                        return
-            snapshot = controller.snapshot()
-            window.refresh(snapshot)
-            tray.refresh(snapshot)
-            if tray.error and root.state() == "withdrawn":
-                window.show()
-            root.after(120, pump)
+                        window.handle_event(event)
+                        if not event.get("ok") and root.state() == "withdrawn":
+                            notify("rclone_tray", "操作未完成；请打开托盘中的挂载管理查看原因。")
+                        if event.get("key") == "shutdown" and event.get("ok"):
+                            tray.stop()
+                            controller.close_executor()
+                            root.destroy()
+                            return
+                snapshot = controller.snapshot()
+                window.refresh(snapshot)
+                tray.refresh(snapshot)
+                if tray.error and root.state() == "withdrawn":
+                    window.show()
+            except Exception:
+                # 单帧刷新失败不应让事件泵停摆：记录后继续下一帧，避免界面假死。
+                logging.exception("UI pump failure")
+            try:
+                root.after(120, pump)
+            except tk.TclError:
+                logging.info("UI 循环结束：窗口已销毁。")
 
         root.after(120, pump)
         root.mainloop()

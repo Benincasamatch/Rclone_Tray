@@ -48,7 +48,8 @@ def _safe_text(text: str, sensitive: tuple[str, ...] = ()) -> str:
     text = re.sub(r"(?i)((?:--)?(?:rc-)?(?:pass(?:word)?|user(?:name)?|login_token|token|secret|authorization)\s*(?:=|:)\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;]+)",
                   r"\1[redacted]", text)
     for value in sorted(set(sensitive), key=len, reverse=True):
-        if value:
+        # 过短的凭据整词替换会毁掉诊断文本；短值交给上面的正则处理。
+        if len(value) >= 4:
             text = text.replace(value, "[redacted]")
             encoded = urllib.parse.quote(value, safe="")
             if encoded != value:

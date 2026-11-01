@@ -6,6 +6,7 @@ import os
 import queue
 import re
 import threading
+import time
 import webbrowser
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -27,10 +28,12 @@ class Controller:
         self._busy: set[str] = set()
         self._closing = False
         self._timer: threading.Timer | None = None
+        self._mount_deadline: float | None = None
         self._revision = 0
         self._config_error = ""
         self._environment_error = ""
         self._version = ""
+        self._exe = ""
         self._remotes: list[str] = []
         self._winfsp = False
         try:
@@ -55,7 +58,7 @@ class Controller:
             gui, mounts = self.pm.statuses()
             return {"config": copy.deepcopy(self._cfg), "revision": self._revision,
                     "config_error": self._config_error, "gui": gui, "mounts": mounts,
-                    "busy": set(self._busy), "version": self._version,
+                    "busy": set(self._busy), "version": self._version, "exe": self._exe,
                     "remotes": list(self._remotes), "environment_error": self._environment_error,
                     "winfsp": self._winfsp, "closing": self._closing}
 
@@ -154,13 +157,10 @@ class Controller:
                 errors.append("rclone 配置无法读取；请检查文件或使用 rclone config 修复。")
             with self._lock:
                 self._version = version or ""
+                self._exe = str(exe) if version and exe else ""
                 self._remotes = remotes
                 self._winfsp = winfsp_installed()
                 self._environment_error = "\n".join(errors)
-                if version and not cfg.rclone_path:
-                    cfg.rclone_path = str(exe)
-                    self.pm.update_config(cfg)
-                    self._cfg.rclone_path = str(exe)
             return "环境已刷新。" if not errors else "\n".join(errors)
         return self._submit("environment", "refresh_environment", operation)
 
@@ -187,11 +187,9 @@ class Controller:
         exe = find_rclone(cfg.rclone_path)
         if not exe or not get_version(exe):
             raise ValueError("rclone 路径无效：请指定可运行的 rclone.exe。配置未保存。")
-        cfg.rclone_path = str(exe)
         if cfg.rclone_conf and not Path(cfg.rclone_conf).is_file():
             raise ValueError("rclone 配置路径无效：请选择现有文件。")
-        if not cfg.gui_no_auth and (not cfg.gui_user or not cfg.gui_pass):
-            raise ValueError("启用认证时，用户名和密码都必须填写。")
+        # 认证凭据在启动 GUI 时校验：默认需要认证，未填凭据只阻止启动服务，不阻止保存其他设置。
         if any(char in cfg.gui_user + cfg.gui_pass for char in "\r\n\x00"):
             raise ValueError("用户名与密码不能包含换行或空字符。")
 
@@ -201,8 +199,12 @@ class Controller:
             self._validate_settings(candidate)
             with self._lock:
                 candidate.mounts = copy.deepcopy(self._cfg.mounts)
+                deadline = self._mount_deadline
             self._commit(candidate, revision, registry=True)
             self._cancel_timer()
+            if deadline is not None and candidate.auto_mount_on_boot:
+                # 保存设置不应吞掉本次登录已排队的自动挂载；按原计划时间重新计时。
+                self._arm_mount_timer(deadline - time.monotonic())
             self.refresh_environment()
             return "设置已保存；现有运行实例未重新启动。"
         return self._submit("settings", "save_settings", operation)
@@ -372,24 +374,36 @@ class Controller:
             if self._timer:
                 self._timer.cancel()
                 self._timer = None
+            self._mount_deadline = None
+
+    def _arm_mount_timer(self, delay: float):
+        def run():
+            with self._lock:
+                self._timer = None
+                self._mount_deadline = None
+                enabled = self._cfg.auto_mount_on_boot
+            if enabled:
+                self._submit("mounts", "auto_mount", lambda: self._batch_result(self.pm.start_all_mounts(auto_only=True)))
+        delay = max(0.0, float(delay))
+        timer = threading.Timer(delay, run)
+        timer.daemon = True
+        with self._lock:
+            self._timer = timer
+            self._mount_deadline = time.monotonic() + delay
+        timer.start()
 
     def schedule_startup(self, autostart: bool):
         self._cancel_timer()
         if self._config_error:
             return
-        def run():
-            if autostart:
-                with self._lock:
-                    enabled = self._cfg.auto_mount_on_boot
-                if enabled:
-                    self._submit("mounts", "auto_mount", lambda: self._batch_result(self.pm.start_all_mounts(auto_only=True)))
         with self._lock:
-            if autostart and self._cfg.auto_mount_on_boot:
-                self._timer = threading.Timer(self._cfg.mount_delay_seconds, run)
-                self._timer.daemon = True
-                self._timer.start()
-            if self._cfg.gui_auto_start:
-                self.start_gui()
+            arm = autostart and self._cfg.auto_mount_on_boot
+            delay = self._cfg.mount_delay_seconds
+            gui_auto = self._cfg.gui_auto_start
+        if arm:
+            self._arm_mount_timer(delay)
+        if gui_auto:
+            self.start_gui()
 
     def queue_navigation(self, page="mounts", mount_id=""):
         self._events.put({"kind": "navigate", "page": page, "mount_id": mount_id})

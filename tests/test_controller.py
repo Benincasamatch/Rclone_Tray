@@ -30,11 +30,15 @@ class ControllerBehaviorTests(unittest.TestCase):
         self.env.stop()
         self.temp.cleanup()
 
-    def result(self):
+    def result(self, key=None):
         deadline=time.monotonic()+5
+        latest=None
         while time.monotonic()<deadline:
-            events=self.controller.drain_events()
-            if events:return events[-1]
+            for event in self.controller.drain_events():
+                if key is None or event.get('key')==key:
+                    latest=event
+            if latest is not None:
+                return latest
             time.sleep(.01)
         self.fail('operation did not settle')
 
@@ -77,6 +81,36 @@ class ControllerBehaviorTests(unittest.TestCase):
         result=self.result()
         self.assertFalse(result['ok'])
         self.assertTrue(self.controller.snapshot()['closing'])
+
+    def test_discovered_rclone_path_is_never_persisted(self):
+        # 单文件版内置 rclone 位于临时解包目录；把它写进配置会让下次启动找不到程序。
+        bundle = str(Path(self.temp.name) / '_MEI123456' / 'rclone' / 'rclone.exe')
+        with patch('app.controller.find_rclone', return_value=bundle), \
+             patch('app.controller.get_version', return_value='1.74.0'):
+            self.controller.refresh_environment()
+            self.assertTrue(self.result('environment')['ok'])
+            snapshot = self.controller.snapshot()
+            self.assertEqual(snapshot['exe'], bundle)
+            self.assertEqual(snapshot['config'].rclone_path, '')
+            self.controller.save_settings(copy.deepcopy(snapshot['config']), snapshot['revision'])
+            self.assertTrue(self.result('settings')['ok'])
+        self.assertEqual(load_config().rclone_path, '')
+
+    def test_saving_settings_keeps_pending_boot_mount(self):
+        self.controller._cfg.mount_delay_seconds = 3600
+        self.controller.schedule_startup(True)
+        self.assertIsNotNone(self.controller._timer)
+        with patch.object(self.controller.pm, 'start_all_mounts') as start:
+            snapshot = self.controller.snapshot()
+            self.controller.save_settings(copy.deepcopy(snapshot['config']), snapshot['revision'])
+            self.assertTrue(self.result('settings')['ok'])
+            self.assertIsNotNone(self.controller._timer)
+            start.assert_not_called()
+            disabled = copy.deepcopy(self.controller.snapshot()['config'])
+            disabled.auto_mount_on_boot = False
+            self.controller.save_settings(disabled, self.controller.snapshot()['revision'])
+            self.assertTrue(self.result('settings')['ok'])
+            self.assertIsNone(self.controller._timer)
 
 
 if __name__=='__main__':unittest.main()

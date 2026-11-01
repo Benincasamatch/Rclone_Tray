@@ -65,5 +65,23 @@ class RuntimeOwnershipTests(unittest.TestCase):
         self.assertIsNone(self.child.poll())
 
 
+class RedactionTests(unittest.TestCase):
+    def test_short_secret_does_not_destroy_log_text(self):
+        from core.processes import _safe_text
+        self.assertEqual(_safe_text('mount a failed; pass=secret1', ('a',)), 'mount a failed; pass=[redacted]')
+
+    def test_long_secret_is_still_removed(self):
+        from core.processes import _safe_text
+        self.assertEqual(_safe_text('token abcdef echoed', ('abcdef',)), 'token [redacted] echoed')
+
+    def test_default_gui_requires_credentials(self):
+        import threading
+        from core.processes import GuiService
+        gui = GuiService(AppConfig(rclone_path=sys.executable), threading.Event())
+        with patch('core.processes.find_rclone', return_value=sys.executable), \
+             patch('core.processes.get_version', return_value='1.74.0'):
+            self.assertIn('必须填写用户名和密码', gui._preflight())
+
+
 if __name__ == "__main__":
     unittest.main()

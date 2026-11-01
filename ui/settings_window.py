@@ -423,7 +423,7 @@ class SettingsWindow:
         Caption(runtime, textvariable=self.gui_saved_var, wrap=px(650)).pack(fill="x", padx=pad, pady=(0, px(T.SPACE_LG)))
         auth = self._form_group(body, "启动与认证")
         self._add_field("service", auth, "gui_auto_start", "随应用启动 GUI", kind="check", hint="每次启动应用时生效，与开机自动挂载无关。")
-        self._add_field("service", auth, "gui_no_auth", "免认证（仅限可信本机）", kind="check", hint="关闭后需填写用户名和密码。修改连接设置前先停止 GUI。")
+        self._add_field("service", auth, "gui_no_auth", "免认证（仅限可信本机）", kind="check", hint="默认需要用户名和密码。勾选后本机任何进程都能调用 rclone RC API，等同于本机命令执行权限。")
         self._add_field("service", auth, "gui_user", "用户名")
         self._add_field("service", auth, "gui_pass", "密码", kind="password", hint="密码不会放入网页 URL。保存设置不会自动重启服务。")
         Clear(auth, height=px(T.SPACE_SM)).pack(fill="x")
@@ -712,7 +712,8 @@ class SettingsWindow:
         self.gui_buttons["start"].set_text("启动中…" if gui.state == "starting" else "启动 GUI")
         self.gui_buttons["stop"].set_text("停止中…" if gui.state == "stopping" else "停止 GUI")
         environment = (f"rclone：{snapshot.get('version') or '未检测到有效版本'}\n"
-                       f"WinFsp：{'已安装' if snapshot.get('winfsp') else '未检测到（挂载依赖）'} · "
+                       + (f"程序：{snapshot['exe']}\n" if snapshot.get("exe") else "")
+                       + f"WinFsp：{'已安装' if snapshot.get('winfsp') else '未检测到（挂载依赖）'} · "
                        f"Remote：{len(snapshot.get('remotes', []))} 个")
         if snapshot.get("environment_error"):
             environment += "\n" + snapshot["environment_error"]
@@ -1040,12 +1041,13 @@ class SettingsWindow:
 
     def _refresh_diagnostics(self, environment: str) -> None:
         cfg = self.snapshot["config"]
+        resolved = str(self.snapshot.get("exe") or "")
         try:
             conf = find_rclone_conf(cfg.rclone_conf)
         except Exception:
             conf = None
         text = (f"rclone_tray\n{environment}\n\n应用配置：{config_path()}\n"
-                f"rclone 可执行文件：{cfg.rclone_path or '自动发现'}\n"
+                f"rclone 可执行文件：{cfg.rclone_path or (resolved + '（自动发现）' if resolved else '自动发现')}\n"
                 f"rclone 配置：{conf or cfg.rclone_conf or '未发现'}\n日志目录：{logs_dir()}\n"
                 f"配置版本：{self.snapshot['revision']}\n挂载配置：{len(cfg.mounts)} 个\n"
                 f"Windows 登录自启：{'启用' if cfg.startup_enabled else '关闭'}\n"
