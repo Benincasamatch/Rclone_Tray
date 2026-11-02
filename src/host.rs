@@ -770,7 +770,12 @@ pub fn show_error(owner: HWND, error: &str) {
 }
 
 fn load_icon(size: i32) -> Result<OwnedIcon, String> {
-    let bytes = include_bytes!("../assets/icon.ico");
+    icon_from_ico(include_bytes!("../assets/icon.ico"), size).map(OwnedIcon)
+}
+
+/// Creates an HICON from the best frame of an embedded ICO file. The caller
+/// owns the icon and must call `DestroyIcon`.
+pub(crate) fn icon_from_ico(bytes: &[u8], size: i32) -> Result<HICON, String> {
     if bytes.len() < 6 || bytes[..4] != [0, 0, 1, 0] {
         return Err("内置图标资源格式无效。".into());
     }
@@ -820,6 +825,6 @@ fn load_icon(size: i32) -> Result<OwnedIcon, String> {
     if icon.is_null() {
         Err(system_error("创建应用图标"))
     } else {
-        Ok(OwnedIcon(icon))
+        Ok(icon)
     }
 }

@@ -328,122 +328,55 @@ unsafe fn path<const N: usize>(hdc: HDC, x: i32, y: i32, dpi: u32, points: [(i32
     Polyline(hdc, points.as_ptr(), N as i32);
 }
 
-unsafe fn icon_box(hdc: HDC, x: i32, y: i32, dpi: u32, bounds: [i32; 4], radius: i32) {
-    RoundRect(
-        hdc, x + px(bounds[0], dpi), y + px(bounds[1], dpi),
-        x + px(bounds[2], dpi), y + px(bounds[3], dpi),
-        px(radius * 2, dpi), px(radius * 2, dpi),
-    );
-}
-
-unsafe fn icon_circle(hdc: HDC, x: i32, y: i32, dpi: u32, bounds: [i32; 4]) {
-    Ellipse(hdc, x + px(bounds[0], dpi), y + px(bounds[1], dpi),
-        x + px(bounds[2], dpi), y + px(bounds[3], dpi));
-}
-
-unsafe fn icon(hdc: HDC, kind: Icon, x: i32, y: i32, dpi: u32, color: COLORREF) {
-    let Some(_dc) = SavedDc::new(hdc) else { return; };
-    let dpi_value = if dpi == 0 { 96 } else { dpi };
-    let width = ((u64::from(dpi_value) * 3 + 96) / 192) as i32;
-    let Some(_pen) = SelectedPen::new(hdc, width, color) else { return; };
-    SelectObject(hdc, GetStockObject(NULL_BRUSH));
+/// Codepoints shared by "Segoe Fluent Icons" (Windows 11) and "Segoe MDL2
+/// Assets" (Windows 10). The glyphs are ready-made system assets; nothing here
+/// is drawn as line art any more.
+fn glyph(kind: Icon) -> u16 {
     match kind {
-        Icon::Drive => {
-            icon_box(hdc, x, y, dpi, [2, 5, 18, 16], 2);
-            path(hdc, x, y, dpi, [(3, 11), (17, 11)]);
-            path(hdc, x, y, dpi, [(13, 14), (15, 14)]);
-        }
-        Icon::Monitor => {
-            icon_box(hdc, x, y, dpi, [2, 3, 18, 14], 2);
-            path(hdc, x, y, dpi, [(10, 14), (10, 17)]);
-            path(hdc, x, y, dpi, [(6, 17), (14, 17)]);
-        }
-        Icon::Sliders => {
-            for (cx, top) in [(4, 5), (10, 11), (16, 7)] {
-                path(hdc, x, y, dpi, [(cx, 2), (cx, top)]);
-                path(hdc, x, y, dpi, [(cx, top + 4), (cx, 18)]);
-                icon_box(hdc, x, y, dpi, [cx - 2, top, cx + 2, top + 4], 1);
-            }
-        }
-        Icon::Info => {
-            icon_circle(hdc, x, y, dpi, [2, 2, 18, 18]);
-            path(hdc, x, y, dpi, [(10, 9), (10, 14)]);
-            path(hdc, x, y, dpi, [(10, 6), (10, 7)]);
-        }
-        Icon::Sidebar => {
-            icon_box(hdc, x, y, dpi, [2, 3, 18, 17], 2);
-            path(hdc, x, y, dpi, [(7, 4), (7, 16)]);
-            path(hdc, x, y, dpi, [(13, 7), (10, 10), (13, 13)]);
-        }
-        Icon::Refresh => {
-            path(hdc, x, y, dpi, [(17, 8), (15, 4), (10, 3), (5, 5), (3, 10), (5, 15), (10, 17), (15, 15)]);
-            path(hdc, x, y, dpi, [(17, 3), (17, 8), (12, 8)]);
-        }
-        Icon::Close => {
-            path(hdc, x, y, dpi, [(5, 5), (15, 15)]);
-            path(hdc, x, y, dpi, [(15, 5), (5, 15)]);
-        }
-        Icon::Exit => {
-            path(hdc, x, y, dpi, [(9, 3), (3, 3), (3, 17), (9, 17)]);
-            path(hdc, x, y, dpi, [(8, 10), (18, 10)]);
-            path(hdc, x, y, dpi, [(14, 6), (18, 10), (14, 14)]);
-        }
-        Icon::Add => {
-            path(hdc, x, y, dpi, [(10, 3), (10, 17)]);
-            path(hdc, x, y, dpi, [(3, 10), (17, 10)]);
-        }
-        Icon::Edit => {
-            path(hdc, x, y, dpi, [(3, 17), (4, 12), (14, 2), (18, 6), (8, 16), (3, 17)]);
-            path(hdc, x, y, dpi, [(12, 4), (16, 8)]);
-        }
-        Icon::Delete => {
-            path(hdc, x, y, dpi, [(3, 5), (17, 5)]);
-            path(hdc, x, y, dpi, [(7, 5), (7, 2), (13, 2), (13, 5)]);
-            path(hdc, x, y, dpi, [(5, 5), (6, 17), (14, 17), (15, 5)]);
-            path(hdc, x, y, dpi, [(8, 8), (8, 14)]);
-            path(hdc, x, y, dpi, [(12, 8), (12, 14)]);
-        }
-        Icon::Play => path(hdc, x, y, dpi, [(6, 3), (17, 10), (6, 17), (6, 3)]),
-        Icon::Stop => icon_box(hdc, x, y, dpi, [4, 4, 16, 16], 2),
-        Icon::PlayAll => {
-            path(hdc, x, y, dpi, [(3, 4), (12, 10), (3, 16), (3, 4)]);
-            path(hdc, x, y, dpi, [(11, 4), (19, 10), (11, 16)]);
-        }
-        Icon::StopAll => {
-            icon_box(hdc, x, y, dpi, [2, 5, 12, 15], 1);
-            path(hdc, x, y, dpi, [(15, 5), (18, 5), (18, 15), (15, 15)]);
-        }
-        Icon::Folder => {
-            path(hdc, x, y, dpi, [(2, 7), (2, 4), (8, 4), (10, 7), (18, 7), (16, 16), (3, 16), (2, 7), (18, 7)]);
-        }
-        Icon::Document => {
-            path(hdc, x, y, dpi, [(12, 2), (4, 2), (4, 18), (16, 18), (16, 6), (12, 2), (12, 6), (16, 6)]);
-            path(hdc, x, y, dpi, [(7, 10), (13, 10)]);
-            path(hdc, x, y, dpi, [(7, 14), (13, 14)]);
-        }
-        Icon::Save => {
-            path(hdc, x, y, dpi, [(3, 3), (14, 3), (17, 6), (17, 17), (3, 17), (3, 3)]);
-            path(hdc, x, y, dpi, [(7, 3), (7, 8), (13, 8), (13, 3)]);
-            icon_box(hdc, x, y, dpi, [6, 12, 14, 17], 1);
-        }
-        Icon::Undo => {
-            path(hdc, x, y, dpi, [(7, 3), (3, 7), (7, 11)]);
-            path(hdc, x, y, dpi, [(3, 7), (12, 7), (16, 10), (16, 14), (13, 17), (9, 17)]);
-        }
-        Icon::Copy => {
-            icon_box(hdc, x, y, dpi, [7, 6, 17, 18], 1);
-            path(hdc, x, y, dpi, [(13, 3), (3, 3), (3, 14), (5, 14)]);
-        }
-        Icon::Search => {
-            icon_circle(hdc, x, y, dpi, [2, 2, 14, 14]);
-            path(hdc, x, y, dpi, [(12, 12), (18, 18)]);
-        }
-        Icon::Link => {
-            path(hdc, x, y, dpi, [(9, 4), (3, 4), (3, 17), (16, 17), (16, 11)]);
-            path(hdc, x, y, dpi, [(11, 2), (18, 2), (18, 9)]);
-            path(hdc, x, y, dpi, [(18, 2), (9, 11)]);
-        }
+        Icon::Drive => 0xEDA2,   // HardDrive
+        Icon::Monitor => 0xE7F4, // TVMonitor
+        Icon::Sliders => 0xE9E9, // Equalizer
+        Icon::Info => 0xE946,
+        Icon::Sidebar => 0xE8A0, // OpenPane
+        Icon::Refresh => 0xE72C,
+        Icon::Close => 0xE711,   // Cancel
+        Icon::Exit => 0xF3B1,    // SignOut
+        Icon::Add => 0xE710,
+        Icon::Edit => 0xE70F,
+        Icon::Delete => 0xE74D,
+        Icon::Play => 0xE768,
+        Icon::Stop => 0xE71A,
+        Icon::PlayAll => 0xEB9D, // FastForward
+        Icon::StopAll => 0xE769, // Pause
+        Icon::Folder => 0xE8B7,
+        Icon::Document => 0xE8A5,
+        Icon::Save => 0xE74E,
+        Icon::Undo => 0xE7A7,
+        Icon::Copy => 0xE8C8,
+        Icon::Search => 0xE721,
+        Icon::Link => 0xE8A7,    // OpenInNewWindow
     }
+}
+
+unsafe fn icon(
+    hdc: HDC,
+    kind: Icon,
+    x: i32,
+    y: i32,
+    dpi: u32,
+    color: COLORREF,
+    font: HFONT,
+) {
+    if font.is_null() { return; }
+    let Some(_dc) = SavedDc::new(hdc) else { return; };
+    SelectObject(hdc, font);
+    SetBkMode(hdc, TRANSPARENT as i32);
+    SetTextColor(hdc, color);
+    let size = px(20, dpi);
+    let units = [glyph(kind), 0];
+    let mut rect = RECT { left: x, top: y, right: x + size, bottom: y + size };
+    DrawTextW(hdc, units.as_ptr(), 1, &mut rect,
+        DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 }
 
 pub(super) unsafe fn button(
@@ -451,6 +384,7 @@ pub(super) unsafe fn button(
     p: Palette,
     dpi: u32,
     font: HFONT,
+    icon_font: HFONT,
     caption: &str,
     active: bool,
     hot: bool,
@@ -537,7 +471,7 @@ pub(super) unsafe fn button(
     let icon_y = rect.top + (rect.bottom - rect.top - icon_size) / 2 + shift;
     if icon_only {
         if let Some(kind) = kind {
-            icon(hdc, kind, rect.left + (width - icon_size) / 2 + shift, icon_y, dpi, foreground);
+            icon(hdc, kind, rect.left + (width - icon_size) / 2 + shift, icon_y, dpi, foreground, icon_font);
         }
         return;
     }
@@ -552,7 +486,7 @@ pub(super) unsafe fn button(
     let content_width = measured.cx.min(available).max(0) + icon_width;
     let start = if sidebar_button { rect.left + padding }
         else { rect.left + (width - content_width) / 2 } + shift;
-    if let Some(kind) = kind { icon(hdc, kind, start, icon_y, dpi, foreground); }
+    if let Some(kind) = kind { icon(hdc, kind, start, icon_y, dpi, foreground, icon_font); }
     draw_text(hdc, RECT {
         left: start + icon_width,
         top: rect.top + shift,
@@ -566,6 +500,7 @@ pub(super) unsafe fn row(
     p: Palette,
     dpi: u32,
     font: HFONT,
+    icon_font: HFONT,
     name: &str,
     remote: &str,
     point: &str,
@@ -595,7 +530,7 @@ pub(super) unsafe fn row(
     };
     rounded(hdc, icon_rect, px(7, dpi), Some(if selected { mix(p.selected, p.accent, 8) } else { p.input }), None);
     icon(hdc, Icon::Drive, icon_rect.left + px(8, dpi), icon_rect.top + px(8, dpi), dpi,
-        if disabled { p.disabled } else if selected { p.accent } else { p.secondary });
+        if disabled { p.disabled } else if selected { p.accent } else { p.secondary }, icon_font);
     let status_color = if disabled { p.disabled } else {
         match state {
             RunState::Ready => p.success,

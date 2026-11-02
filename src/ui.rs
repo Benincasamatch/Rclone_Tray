@@ -198,6 +198,10 @@ struct View {
     font: Cell<HFONT>,
     title_font: Cell<HFONT>,
     small_font: Cell<HFONT>,
+    icon_font: Cell<HFONT>,
+    mark_icon: Cell<HICON>,
+    big_icon: Cell<HICON>,
+    small_icon: Cell<HICON>,
     panel_brush: Cell<HBRUSH>,
     input_brush: Cell<HBRUSH>,
     sidebar_brush: Cell<HBRUSH>,
@@ -222,12 +226,22 @@ impl Drop for View {
             for object in [
                 self.title_font.replace(null_mut()),
                 self.small_font.replace(null_mut()),
+                self.icon_font.replace(null_mut()),
                 self.panel_brush.replace(null_mut()),
                 self.input_brush.replace(null_mut()),
                 self.sidebar_brush.replace(null_mut()),
             ] {
                 if !object.is_null() {
                     DeleteObject(object);
+                }
+            }
+            for icon in [
+                self.mark_icon.replace(null_mut()),
+                self.big_icon.replace(null_mut()),
+                self.small_icon.replace(null_mut()),
+            ] {
+                if !icon.is_null() {
+                    DestroyIcon(icon);
                 }
             }
             if !font.is_null() {
@@ -452,6 +466,10 @@ fn create_view(
         font: Cell::new(null_mut()),
         title_font: Cell::new(null_mut()),
         small_font: Cell::new(null_mut()),
+        icon_font: Cell::new(null_mut()),
+        mark_icon: Cell::new(null_mut()),
+        big_icon: Cell::new(null_mut()),
+        small_icon: Cell::new(null_mut()),
         panel_brush: Cell::new(null_mut()),
         input_brush: Cell::new(null_mut()),
         sidebar_brush: Cell::new(null_mut()),
@@ -694,8 +712,15 @@ unsafe fn paint_background(hwnd: HWND, dc: HDC) {
     let mut rect = std::mem::zeroed::<RECT>();
     GetClientRect(hwnd, &mut rect);
     with_view(hwnd, |v| {
-        style::background(dc, rect, v.dpi.get(), if v.compact.get() { 64 } else { 192 },
+        let dpi = v.dpi.get();
+        style::background(dc, rect, dpi, if v.compact.get() { 64 } else { 192 },
             !v.owner.is_null(), style::palette(v.dark.get()));
+        if v.compact.get() || !v.owner.is_null() { return; }
+        let mark = v.mark_icon.get();
+        if mark.is_null() { return; }
+        let scale = dpi as i32;
+        let size = 24 * scale / 96;
+        DrawIconEx(dc, 24 * scale / 96, 32 * scale / 96, mark, size, size, 0, null_mut(), DI_NORMAL);
     });
 }
 
@@ -715,7 +740,7 @@ unsafe fn paint_item(hwnd: HWND, item: &DRAWITEMSTRUCT) {
                         let hit = SendMessageW(item.hwndItem, LB_ITEMFROMPOINT, 0, (cursor.x as u16 as isize) | ((cursor.y as u16 as isize) << 16));
                         if hit >> 16 == 0 && (hit & 0xffff) as u32 == item.itemID { row.itemState |= ODS_HOTLIGHT; }
                     }
-                    style::row(&row, p, v.dpi.get(), v.font.get(), &mount.name, &mount.remote, &mount.mount_point, state);
+                    style::row(&row, p, v.dpi.get(), v.font.get(), v.icon_font.get(), &mount.name, &mount.remote, &mount.mount_point, state);
                 }
             }
         } else if item.CtlType == ODT_COMBOBOX {
@@ -741,7 +766,7 @@ unsafe fn paint_item(hwnd: HWND, item: &DRAWITEMSTRUCT) {
             let page = v.model.borrow().page;
             let active = matches!((item.CtlID as u16, page), (NAV_MOUNTS, Page::Mounts) | (NAV_SERVICE, Page::Service) | (NAV_SETTINGS, Page::Settings) | (NAV_ABOUT, Page::About));
             with_control_text(item.hwndItem, |caption| {
-                style::button(item, p, v.dpi.get(), v.font.get(), caption, active, v.hot.get() == item.hwndItem,
+                style::button(item, p, v.dpi.get(), v.font.get(), v.icon_font.get(), caption, active, v.hot.get() == item.hwndItem,
                     if is_check(item.CtlID as u16) { Some(SendMessageW(item.hwndItem, BM_GETCHECK, 0, 0) == BST_CHECKED as isize) } else { None });
             });
         } else {
@@ -1031,7 +1056,7 @@ fn readonly(
 
 fn build_controls(hwnd: HWND, editor: bool) -> Result<(), String> {
     if editor { return build_editor(hwnd); }
-    label(hwnd, 922, None, "rclone", [24, 28, 144, 32], false)?;
+    label(hwnd, 922, None, "rclone", [64, 28, 104, 32], false)?;
     label(hwnd, 923, None, "TRAY / WORKSPACE", [24, 64, 148, 20], false)?;
     button(hwnd, TOGGLE_NAV, None, "折叠侧栏", [16, 104, 160, 32])?;
     for (id, s, y) in [
@@ -1567,6 +1592,44 @@ fn ensure_visible(hwnd: HWND, child: HWND) {
         layout(hwnd);
     }
 }
+/// The ready-made system icon font: "Segoe Fluent Icons" on Windows 11, with
+/// "Segoe MDL2 Assets" as the Windows 10 fallback. Both carry the same
+/// codepoints, so `style::glyph` needs a single mapping.
+unsafe fn icon_font(dpi: u32) -> HFONT {
+    let height = -(20 * dpi as i32 / 96);
+    for face in ["Segoe Fluent Icons", "Segoe MDL2 Assets"] {
+        let name = wide(face);
+        let font = CreateFontW(
+            height, 0, 0, 0, FW_NORMAL as i32, 0, 0, 0,
+            DEFAULT_CHARSET as u32, OUT_DEFAULT_PRECIS as u32, CLIP_DEFAULT_PRECIS as u32,
+            CLEARTYPE_QUALITY as u32, DEFAULT_PITCH as u32 | FF_DONTCARE as u32,
+            name.as_ptr(),
+        );
+        if font.is_null() { continue; }
+        let dc = GetDC(null_mut());
+        if dc.is_null() {
+            DeleteObject(font);
+            continue;
+        }
+        let previous = SelectObject(dc, font);
+        let mut actual = [0u16; 64];
+        let length = GetTextFaceW(dc, actual.len() as i32, actual.as_mut_ptr());
+        SelectObject(dc, previous);
+        ReleaseDC(null_mut(), dc);
+        let selected = length > 1
+            && String::from_utf16_lossy(&actual[..length as usize - 1]).eq_ignore_ascii_case(face);
+        if selected { return font; }
+        DeleteObject(font);
+    }
+    null_mut()
+}
+
+/// Sidebar brand mark created from the ICO bytes; the caller owns the handle.
+unsafe fn mark_icon(dpi: u32) -> HICON {
+    let size = 24 * dpi as i32 / 96;
+    crate::host::icon_from_ico(include_bytes!("../assets/mark.ico"), size).unwrap_or(null_mut())
+}
+
 fn apply_font(hwnd: HWND) {
     let dpi = with_view(hwnd, |v| v.dpi.get()).unwrap_or(96);
     let make_font = |size: i32, weight: i32| unsafe {
@@ -1582,7 +1645,33 @@ fn apply_font(hwnd: HWND) {
         for object in [font, title, small] { if !object.is_null() { unsafe { DeleteObject(object); } } }
         return;
     }
+    let (icon, mark) = unsafe { (icon_font(dpi), mark_icon(dpi)) };
     let old = with_view(hwnd, |v| [v.font.replace(font), v.title_font.replace(title), v.small_font.replace(small)]).unwrap();
+    // A failed fallback never replaces a working object; the old handle stays.
+    let old_icon = with_view(hwnd, |v| if icon.is_null() { null_mut() } else { v.icon_font.replace(icon) }).unwrap();
+    let old_mark = with_view(hwnd, |v| if mark.is_null() { null_mut() } else { v.mark_icon.replace(mark) }).unwrap();
+    let (big, small) = (
+        crate::host::icon_from_ico(include_bytes!("../assets/icon.ico"), 32 * dpi as i32 / 96).unwrap_or(null_mut()),
+        crate::host::icon_from_ico(include_bytes!("../assets/icon.ico"), 16 * dpi as i32 / 96).unwrap_or(null_mut()),
+    );
+    let previous = with_view(hwnd, |v| (
+        if big.is_null() { null_mut() } else { v.big_icon.replace(big) },
+        if small.is_null() { null_mut() } else { v.small_icon.replace(small) },
+    )).unwrap();
+    unsafe {
+        if !old_icon.is_null() { DeleteObject(old_icon); }
+        if !old_mark.is_null() { DestroyIcon(old_mark); }
+        // DPI-exact frames keep the title bar and taskbar crisp; without this the
+        // shell scales the embedded EXE icon.
+        if !big.is_null() {
+            SendMessageW(hwnd, WM_SETICON, ICON_BIG as WPARAM, big as LPARAM);
+            if !previous.0.is_null() { DestroyIcon(previous.0); }
+        }
+        if !small.is_null() {
+            SendMessageW(hwnd, WM_SETICON, ICON_SMALL as WPARAM, small as LPARAM);
+            if !previous.1.is_null() { DestroyIcon(previous.1); }
+        }
+    }
     with_view(hwnd, |v| {
         for c in v.controls.borrow().iter() {
             unsafe { SendMessageW(c.hwnd, WM_SETFONT, font as usize, 1); }
