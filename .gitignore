@@ -43,3 +43,6 @@ pip-unpack-*/
 .idea/
 .vscode/
 *.swp
+
+# Rust 构建缓存
+target/
