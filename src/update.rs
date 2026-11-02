@@ -12,6 +12,7 @@ pub const RELEASES_API: &str =
     "https://api.github.com/repos/Benincasamatch/Rclone_Tray/releases?per_page=10";
 pub const RELEASES_PAGE: &str = "https://github.com/Benincasamatch/Rclone_Tray/releases";
 const ASSET_PREFIX: &str = "https://github.com/Benincasamatch/Rclone_Tray/releases/download/";
+const REPO_PREFIX: &str = "https://github.com/Benincasamatch/Rclone_Tray/";
 const MAX_RESPONSE: usize = 2 * 1024 * 1024;
 const MAX_NOTES: usize = 1200;
 const CONNECT_TIMEOUT_MS: i32 = 4_000;
@@ -114,7 +115,7 @@ fn parse_releases(bytes: &[u8], current: &Version, checked_at: &str) -> Result<U
         let page = release
             .get("html_url")
             .and_then(|v| v.as_str())
-            .filter(|url| url.starts_with("https://github.com/"))
+            .filter(|url| url.starts_with(REPO_PREFIX))
             .unwrap_or(RELEASES_PAGE)
             .to_string();
         let published = release
