@@ -72,6 +72,8 @@ rclone 可执行文件优先级：明确设置 → 打包 EXE 旁的 `rclone.exe
 
 `--show` 显式显示主窗口；`--autostart` 是系统登录启动标记。隔离验证可设 `RCLONE_TRAY_DATA_DIR`，应用配置、日志、缓存转到该目录；`RCLONE_CONFIG` 或设置中的 `rclone_conf` 可指定独立 rclone 配置。
 
+工作区若被打了 `Mandatory Label\Low` 完整性标签（`icacls <目录>` 可见），该目录下启动的 EXE 会以 Low 完整性运行，无法写 `%APPDATA%`，应用报 `创建临时文件失败（系统错误 5）`、挂载返回 `c0000022`。修复：`powershell -ExecutionPolicy Bypass -File tools\fix-integrity-label.ps1 -Root <工作区目录>`（检测到 Low 时才请求管理员权限，把标签改回 Medium）。
+
 ## 构建与回归
 
 ```powershell

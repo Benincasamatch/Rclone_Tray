@@ -17,6 +17,7 @@ rclone/
 logs/
 *.log
 *.log.*
+!docs/evidence/*.log
 config.json
 
 # rclone 自身配置与凭据（含 token、密码，切勿提交）

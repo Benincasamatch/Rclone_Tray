@@ -1,0 +1,17 @@
+﻿PASS window-created {"hwnd":3738266,"reused":false,"pid":25348}
+PASS environment-probe {"footer":"1.74.0 · GUI 已停止 · 空闲"}
+PASS mount-row-listed {"count":1}
+PASS mount-selected {"detail":"102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已停止 | VFS writes · 本地模式 · 可读写 | 自动挂载：允许 | 卷标：
+102 |  | 已停止"}
+PASS start-dispatched {"enabled":true}
+PASS mount-ready {"state":"ready","detail":"102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已就绪 · PID 33028 | VFS writes · 本
+地模式 · 可读写 | 自动挂载：允许 | 卷标：102 |  | 已验证本实例 PID，挂载根目录可访问"}
+PASS drive-visible {"entries":["503","Backup","Download","M","MaterialLibrary","存储盘","视频仓库"]}
+PASS drive-write-read {"path":"Z:\\rclone_tray_102_probe.txt","read":"rclone_tray webdav 102 write probe"}
+PASS drive-delete {"path":"Z:\\rclone_tray_102_probe.txt"}
+PASS drive-identity {"label":"102","drive_type":"Fixed","root":"Z:\\","free":1125899906842624,"used":0,"format":"FUSE-r
+clone"}
+PASS mount-stopped {"detail":"102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已停止 | VFS writes · 本地模式 · 可读写 | 自动挂载：允许 | 卷标：1
+02 |  | 已停止、确认卸载并恢复原空目录"}
+PASS drive-removed {"z_exists":false}
+REPORT E:\items\nether\projects\rclone_tray\target\tmptest\mount-smoke-ps.json

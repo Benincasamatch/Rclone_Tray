@@ -1,0 +1,108 @@
+﻿{
+    "exe":  "E:\\items\\nether\\projects\\rclone_tray\\dist\\rclone_tray.exe",
+    "pid":  25348,
+    "ok":  true,
+    "steps":  [
+                  {
+                      "step":  "window-created",
+                      "ok":  true,
+                      "detail":  {
+                                     "hwnd":  3738266,
+                                     "reused":  false,
+                                     "pid":  25348
+                                 }
+                  },
+                  {
+                      "step":  "environment-probe",
+                      "ok":  true,
+                      "detail":  {
+                                     "footer":  "1.74.0 · GUI 已停止 · 空闲"
+                                 }
+                  },
+                  {
+                      "step":  "mount-row-listed",
+                      "ok":  true,
+                      "detail":  {
+                                     "count":  1
+                                 }
+                  },
+                  {
+                      "step":  "mount-selected",
+                      "ok":  true,
+                      "detail":  {
+                                     "detail":  "102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已停止 | VFS writes · 本地模式 · 可读写 | 自动挂载：允许 | 卷标：102 |  | 已停止"
+                                 }
+                  },
+                  {
+                      "step":  "start-dispatched",
+                      "ok":  true,
+                      "detail":  {
+                                     "enabled":  true
+                                 }
+                  },
+                  {
+                      "step":  "mount-ready",
+                      "ok":  true,
+                      "detail":  {
+                                     "state":  "ready",
+                                     "detail":  "102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已就绪 · PID 33028 | VFS writes · 本地模式 · 可读写 | 自动挂载：允许 | 卷标：102 |  | 已验证本实例 PID，挂载根目录可访问"
+                                 }
+                  },
+                  {
+                      "step":  "drive-visible",
+                      "ok":  true,
+                      "detail":  {
+                                     "entries":  [
+                                                     "503",
+                                                     "Backup",
+                                                     "Download",
+                                                     "M",
+                                                     "MaterialLibrary",
+                                                     "存储盘",
+                                                     "视频仓库"
+                                                 ]
+                                 }
+                  },
+                  {
+                      "step":  "drive-write-read",
+                      "ok":  true,
+                      "detail":  {
+                                     "path":  "Z:\\rclone_tray_102_probe.txt",
+                                     "read":  "rclone_tray webdav 102 write probe"
+                                 }
+                  },
+                  {
+                      "step":  "drive-delete",
+                      "ok":  true,
+                      "detail":  {
+                                     "path":  "Z:\\rclone_tray_102_probe.txt"
+                                 }
+                  },
+                  {
+                      "step":  "drive-identity",
+                      "ok":  true,
+                      "detail":  {
+                                     "label":  "102",
+                                     "drive_type":  "Fixed",
+                                     "root":  "Z:\\",
+                                     "free":  1125899906842624,
+                                     "used":  0,
+                                     "format":  "FUSE-rclone"
+                                 }
+                  },
+                  {
+                      "step":  "mount-stopped",
+                      "ok":  true,
+                      "detail":  {
+                                     "detail":  "102 |  | Remote | 102: |  | 挂载位置 | Z: |  | 已停止 | VFS writes · 本地模式 · 可读写 | 自动挂载：允许 | 卷标：102 |  | 已停止、确认卸载并恢复原空目录"
+                                 }
+                  },
+                  {
+                      "step":  "drive-removed",
+                      "ok":  true,
+                      "detail":  {
+                                     "z_exists":  false
+                                 }
+                  }
+              ]
+}
