@@ -1,4 +1,5 @@
-; Build with: ISCC.exe /DAppVersion=2.1.0 tools\installer.iss
+; Build with: ISCC.exe /DAppVersion=<x.y.z> tools\installer.iss
+; tools\build.ps1 从 Cargo.toml 读取版本并传入 AppVersion。
 ; Produces dist\rclone_tray_setup.exe next to the portable executable.
 #ifndef AppVersion
   #define AppVersion "0.0.0"

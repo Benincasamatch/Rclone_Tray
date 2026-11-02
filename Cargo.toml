@@ -1,6 +1,6 @@
 [package]
 name = "rclone_tray"
-version = "2.1.0"
+version = "2.1.1"
 edition = "2021"
 description = "Native Windows rclone tray manager with disposable foreground windows"
 license = "MIT"
