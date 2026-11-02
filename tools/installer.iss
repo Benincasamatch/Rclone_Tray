@@ -14,6 +14,7 @@ AppName=rclone_tray
 AppVersion={#AppVersion}
 AppVerName=rclone_tray {#AppVersion}
 AppPublisher=Benincasamatch
+AppCopyright=MIT License
 AppPublisherURL=https://github.com/Benincasamatch/Rclone_Tray
 AppSupportURL=https://github.com/Benincasamatch/Rclone_Tray/issues
 AppUpdatesURL=https://github.com/Benincasamatch/Rclone_Tray/releases
@@ -21,6 +22,9 @@ DefaultDirName={localappdata}\Programs\rclone_tray
 DefaultGroupName=rclone_tray
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
+; The resident app owns this mutex; Inno then asks to close it before
+; replacing files. Custom RCLONE_TRAY_DATA_DIR runs use a namespaced mutex.
+AppMutex=Local\rclone_tray_single_instance
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=..\dist
@@ -37,6 +41,8 @@ VersionInfoVersion={#AppVersion}.0
 VersionInfoDescription=rclone_tray installer
 VersionInfoProductName=rclone_tray
 VersionInfoProductVersion={#AppVersion}
+VersionInfoCompany=Benincasamatch
+VersionInfoCopyright=MIT License
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
