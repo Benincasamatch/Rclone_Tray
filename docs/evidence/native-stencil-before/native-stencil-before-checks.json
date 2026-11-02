@@ -1,0 +1,158 @@
+{
+  "status": "pass",
+  "executable": "E:\\items\\nether\\projects\\rclone_tray\\dist\\rclone_tray.exe",
+  "mode": "capture-only",
+  "theme": "dark",
+  "checks": [
+    {
+      "name": "matching-process-integrity",
+      "passed": true,
+      "observed": [
+        12288,
+        12288
+      ]
+    },
+    {
+      "name": "real-native-window",
+      "passed": true,
+      "observed": {
+        "class": "RcloneTray.Frontend",
+        "hwnd": 1052928,
+        "pid": 30824
+      }
+    },
+    {
+      "name": "configuration-loaded",
+      "passed": true,
+      "observed": "完成：环境已刷新。"
+    },
+    {
+      "name": "page-mounts",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 挂载",
+        "surface_id": 220,
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-service",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · rclone GUI",
+        "surface_id": 300,
+        "text": "服务：已停止\r\n已停止\r\n已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-settings",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 设置",
+        "surface_id": 406,
+        "text": "rclone：1.74.0\r\n程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装 · Remote：1 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-about",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 关于与诊断",
+        "surface_id": 501,
+        "text": "rclone_tray 2.0.0 · 原生 Rust / Win32\r\n\r\nrclone 版本：1.74.0\r\nrclone 程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装\r\nRemote：1 个\r\n\r\n应用配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-y8b69u1y\\app\\config.json\r\nrclone 配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-y8b69u1y\\rclone.conf\r\n日志目录：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-y8b69u1y\\app\\logs\r\n配置版本：0\r\n挂载配置：3 个\r\nWindows 登录自启：关闭\r\n登录自动挂载：关闭 · 延迟 15 秒\r\nGUI：已停止（认证，凭据不显示）\r\n配置读取：正常\r\n\r\n诊断不显示或复制用户名、密码、进程参数或原始错误；日志由运行层脱敏。\r\n配置损坏不会被覆盖：修复文件后重新载入。\r\n关闭窗口销毁前端，托盘与本应用任务继续运行；退出会停止本应用任务。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "real-exit-confirmation",
+      "passed": true,
+      "observed": {
+        "class": "#32770",
+        "pid": 30824,
+        "title": "退出 rclone_tray？",
+        "exit_command_id": 112,
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "orderly-process-exit",
+      "passed": true,
+      "observed": {
+        "exit_code": 0,
+        "confirmation_id": 6
+      }
+    }
+  ],
+  "captures": [
+    {
+      "name": "mounts",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-before\\native-stencil-before-mounts.png",
+      "hwnd": 1052928,
+      "bounds": [
+        592,
+        164,
+        1967,
+        1226
+      ],
+      "pixels": [
+        1375,
+        1062
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "service",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-before\\native-stencil-before-service.png",
+      "hwnd": 1052928,
+      "bounds": [
+        592,
+        164,
+        1967,
+        1226
+      ],
+      "pixels": [
+        1375,
+        1062
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "settings",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-before\\native-stencil-before-settings.png",
+      "hwnd": 1052928,
+      "bounds": [
+        592,
+        164,
+        1967,
+        1226
+      ],
+      "pixels": [
+        1375,
+        1062
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "about",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-before\\native-stencil-before-about.png",
+      "hwnd": 1052928,
+      "bounds": [
+        592,
+        164,
+        1967,
+        1226
+      ],
+      "pixels": [
+        1375,
+        1062
+      ],
+      "method": "foreground desktop crop"
+    }
+  ],
+  "pid": 30824,
+  "sandbox": "C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-y8b69u1y",
+  "sandbox_deleted": true
+}

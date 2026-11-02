@@ -1,0 +1,139 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "main_window_appears",
+      "ok": true,
+      "detail": "rclone_tray"
+    },
+    {
+      "name": "mount_list_shows_config",
+      "ok": true,
+      "detail": "E2E 本地挂载  |  已停止  |  native_local:E:\\items\\nether\\projects\\rclone_tray\\target\\native-e2e\\run\\source  |  E:\\items\\nether\\projects\\rclone_tray\\target\\native-e2e\\run\\mnt"
+    },
+    {
+      "name": "manual_launch_does_not_auto_mount",
+      "ok": true,
+      "detail": "no child rclone; mount absent"
+    },
+    {
+      "name": "idle_footer_reports_gui_stopped",
+      "ok": true,
+      "detail": "1.74.0 · GUI 已停止 · 空闲"
+    },
+    {
+      "name": "credentials_hidden_from_ui",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mount_ready_and_readback",
+      "ok": true,
+      "detail": "payload readable through mount"
+    },
+    {
+      "name": "mount_process_is_owned_child",
+      "ok": true,
+      "detail": "[21488]"
+    },
+    {
+      "name": "mount_stop_releases_process_and_mount",
+      "ok": true,
+      "detail": "no child rclone"
+    },
+    {
+      "name": "gui_service_ready",
+      "ok": true,
+      "detail": "服务：已就绪 · PID 2112 / 已验证本实例 PID 和 GUI HTTP 服务 / 已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。"
+    },
+    {
+      "name": "gui_process_is_owned_child",
+      "ok": true,
+      "detail": "[2112]"
+    },
+    {
+      "name": "rc_requires_authentication",
+      "ok": true,
+      "detail": "status=401"
+    },
+    {
+      "name": "rc_authenticated_pid_matches_owned_process",
+      "ok": true,
+      "detail": "{\n\t\"pid\": 2112\n}\n"
+    },
+    {
+      "name": "rc_remote_listing",
+      "ok": true,
+      "detail": "{\n\t\"remotes\": [\n\t\t\"native_local\"\n\t]\n}\n"
+    },
+    {
+      "name": "gui_web_page_serves",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "close_hides_window_not_process",
+      "ok": true,
+      "detail": "process alive"
+    },
+    {
+      "name": "tray_icon_registered",
+      "ok": true,
+      "detail": "rect=<ctypes.wintypes.RECT object at 0x0000000003602FD0>"
+    },
+    {
+      "name": "tray_reopens_window",
+      "ok": true,
+      "detail": "rclone_tray"
+    },
+    {
+      "name": "tray_menu_exit_requests_confirmation",
+      "ok": true,
+      "detail": "退出 rclone_tray？"
+    },
+    {
+      "name": "exit_code_zero",
+      "ok": true,
+      "detail": "exit=0"
+    },
+    {
+      "name": "exit_stops_all_children",
+      "ok": true,
+      "detail": "no rclone children"
+    },
+    {
+      "name": "exit_removes_mount",
+      "ok": true,
+      "detail": "reparse=False"
+    },
+    {
+      "name": "exit_closes_gui_port_5572",
+      "ok": true,
+      "detail": "listening=False"
+    },
+    {
+      "name": "exit_closes_gui_port_5570",
+      "ok": true,
+      "detail": "listening=False"
+    },
+    {
+      "name": "source_payload_intact",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "screenshots": [
+    "docs\\evidence\\native-2026-11-02-mounts-idle.png",
+    "docs\\evidence\\native-2026-11-02-mount-ready.png",
+    "docs\\evidence\\native-2026-11-02-mount-stopped.png",
+    "docs\\evidence\\native-2026-11-02-gui-ready.png",
+    "docs\\evidence\\native-2026-11-02-reopened.png"
+  ],
+  "notes": [
+    "mount detail: E2E 本地挂载 /  / Remote / native_local:E:\\items\\nether\\projects\\rclone_tray\\target\\native-e2e\\run\\source /  / 挂载位置 / E:\\items\\nether\\projects\\rclone_tray\\target\\native-e2e\\run\\mnt /  / 已就绪 · PID 21488 / VFS writes · 本地模式 · 可读写 / 自动挂载：允许 / 卷标： /  / 已验证本实例 PID，挂载根目录可访问",
+    "gui status transitions: 服务：已停止 / 已停止 / 已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。 || 服务：启动中 / 正在启动 GUI 并验证本实例服务 / 已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。 || 服务：启动中 · PID 2112 / 已创建进程，正在验证本实例就绪 / 已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。 || 服务：已就绪 · PID 2112 / 已验证本实例 PID 和 GUI HTTP 服务 / 已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。"
+  ],
+  "app_pid": 29400,
+  "executable": "dist/rclone_tray.exe",
+  "executable_sha256": "ee327a4011564cea622bd0379f6c992e2cabb11dc3bddd0fff0ac0b2f4fb2fa2"
+}

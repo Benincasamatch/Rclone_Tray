@@ -1,0 +1,827 @@
+{
+  "status": "pass",
+  "executable": "E:\\items\\nether\\projects\\rclone_tray\\dist\\rclone_tray-stencil.exe",
+  "mode": "native-capture-and-smoke",
+  "theme": "dark",
+  "checks": [
+    {
+      "name": "matching-process-integrity",
+      "passed": true,
+      "observed": [
+        12288,
+        12288
+      ]
+    },
+    {
+      "name": "real-native-window",
+      "passed": true,
+      "observed": {
+        "class": "RcloneTray.Frontend",
+        "hwnd": 5442874,
+        "pid": 35448
+      }
+    },
+    {
+      "name": "configuration-loaded",
+      "passed": true,
+      "observed": "完成：环境已刷新。"
+    },
+    {
+      "name": "summary-3-visible",
+      "passed": true,
+      "observed": {
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "list_count": 3
+      }
+    },
+    {
+      "name": "mount-selection",
+      "passed": true,
+      "observed": {
+        "index": 1,
+        "detail": "归档备份 · 2026 项目长期存档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/archive/2026/projects/backups\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-archive\r\n\r\n已停止\r\nVFS full · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：归档备份 · 2026 项目长期存档\r\n\r\n已停止",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "summary-0-visible",
+      "passed": true,
+      "observed": {
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 0 个\r\n没有匹配项；清除筛选即可显示，原配置保留。",
+        "list_count": 0
+      }
+    },
+    {
+      "name": "no-results-hint",
+      "passed": true,
+      "observed": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 0 个\r\n没有匹配项；清除筛选即可显示，原配置保留。"
+    },
+    {
+      "name": "summary-3-visible",
+      "passed": true,
+      "observed": {
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "list_count": 3
+      }
+    },
+    {
+      "name": "search-cleared",
+      "passed": true,
+      "observed": {
+        "text": "",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "search-keeps-stable-selection",
+      "passed": true,
+      "observed": {
+        "detail": "归档备份 · 2026 项目长期存档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/archive/2026/projects/backups\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-archive\r\n\r\n已停止\r\nVFS full · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：归档备份 · 2026 项目长期存档\r\n\r\n已停止",
+        "selection_index": 1
+      }
+    },
+    {
+      "name": "keyboard-search-to-filter",
+      "passed": true,
+      "observed": {
+        "filter_index": 1,
+        "list_count": 3
+      }
+    },
+    {
+      "name": "page-mounts",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 挂载",
+        "surface_id": 220,
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-service",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · rclone GUI",
+        "surface_id": 300,
+        "text": "服务：已停止\r\n已停止\r\n已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-settings",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 设置",
+        "surface_id": 406,
+        "text": "rclone：1.74.0\r\n程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装 · Remote：1 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-about",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 关于与诊断",
+        "surface_id": 501,
+        "text": "rclone_tray 2.0.0 · 原生 Rust / Win32\r\n\r\nrclone 版本：1.74.0\r\nrclone 程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装\r\nRemote：1 个\r\n\r\n应用配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\app\\config.json\r\nrclone 配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\rclone.conf\r\n日志目录：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\app\\logs\r\n配置版本：0\r\n挂载配置：3 个\r\nWindows 登录自启：关闭\r\n登录自动挂载：关闭 · 延迟 15 秒\r\nGUI：已停止（认证，凭据不显示）\r\n配置读取：正常\r\n\r\n诊断不显示或复制用户名、密码、进程参数或原始错误；日志由运行层脱敏。\r\n配置损坏不会被覆盖：修复文件后重新载入。\r\n关闭窗口销毁前端，托盘与本应用任务继续运行；退出会停止本应用任务。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-mounts",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 挂载",
+        "surface_id": 220,
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "mount-selection",
+      "passed": true,
+      "observed": {
+        "index": 0,
+        "detail": "工作文档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/documents\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-documents\r\n\r\n已停止\r\nVFS writes · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：工作文档\r\n\r\n已停止",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "editor-selected-fields",
+      "passed": true,
+      "observed": {
+        "name": "工作文档",
+        "remote": "localdemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/documents",
+        "mount_point": "C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-documents",
+        "opened_by": "pointer"
+      }
+    },
+    {
+      "name": "editor-cancel",
+      "passed": true,
+      "observed": {
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "narrow-window-size",
+      "passed": true,
+      "observed": [
+        830,
+        370,
+        1730,
+        1020
+      ]
+    },
+    {
+      "name": "narrow-scrolling-edit-reachable",
+      "passed": true,
+      "observed": {
+        "control_id": 211,
+        "before": [
+          1200,
+          1653,
+          1436,
+          1693
+        ],
+        "after": [
+          1194,
+          831,
+          1424,
+          871
+        ],
+        "reachable": true
+      }
+    },
+    {
+      "name": "narrow-edit-pointer",
+      "passed": true,
+      "observed": {
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "narrow-footer-reachable",
+      "passed": true,
+      "observed": {
+        "control_id": 114,
+        "before": [
+          949,
+          970,
+          1669,
+          1010
+        ],
+        "after": [
+          949,
+          970,
+          1669,
+          1010
+        ],
+        "reachable": true,
+        "text": "1.74.0 · GUI 已停止 · 空闲"
+      }
+    },
+    {
+      "name": "narrow-all-mount-actions-reachable",
+      "passed": true,
+      "observed": [
+        {
+          "control_id": 211,
+          "before": [
+            1194,
+            831,
+            1424,
+            871
+          ],
+          "after": [
+            1194,
+            831,
+            1424,
+            871
+          ],
+          "reachable": true
+        },
+        {
+          "control_id": 212,
+          "before": [
+            1439,
+            831,
+            1669,
+            871
+          ],
+          "after": [
+            1439,
+            831,
+            1669,
+            871
+          ],
+          "reachable": true
+        },
+        {
+          "control_id": 213,
+          "before": [
+            949,
+            776,
+            1179,
+            816
+          ],
+          "after": [
+            949,
+            776,
+            1179,
+            816
+          ],
+          "reachable": true
+        },
+        {
+          "control_id": 214,
+          "before": [
+            1194,
+            776,
+            1424,
+            816
+          ],
+          "after": [
+            1194,
+            776,
+            1424,
+            816
+          ],
+          "reachable": true
+        },
+        {
+          "control_id": 215,
+          "before": [
+            1439,
+            776,
+            1669,
+            816
+          ],
+          "after": [
+            1439,
+            776,
+            1669,
+            816
+          ],
+          "reachable": true
+        },
+        {
+          "control_id": 216,
+          "before": [
+            949,
+            831,
+            1179,
+            871
+          ],
+          "after": [
+            949,
+            831,
+            1179,
+            871
+          ],
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "name": "page-service",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · rclone GUI",
+        "surface_id": 300,
+        "text": "服务：已停止\r\n已停止\r\n已保存：需要认证（凭据不显示），手动启动。草稿不影响运行操作。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-settings",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 设置",
+        "surface_id": 406,
+        "text": "rclone：1.74.0\r\n程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装 · Remote：1 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "narrow-status-strip-painted-above-content",
+      "passed": true,
+      "observed": {
+        "footer_rgb": [
+          16,
+          17,
+          20
+        ],
+        "header_rgb": [
+          16,
+          17,
+          20
+        ],
+        "footer_text": "1.74.0 · GUI 已停止 · 空闲"
+      }
+    },
+    {
+      "name": "page-about",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 关于与诊断",
+        "surface_id": 501,
+        "text": "rclone_tray 2.0.0 · 原生 Rust / Win32\r\n\r\nrclone 版本：1.74.0\r\nrclone 程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装\r\nRemote：1 个\r\n\r\n应用配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\app\\config.json\r\nrclone 配置：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\rclone.conf\r\n日志目录：C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\app\\logs\r\n配置版本：0\r\n挂载配置：3 个\r\nWindows 登录自启：关闭\r\n登录自动挂载：关闭 · 延迟 15 秒\r\nGUI：已停止（认证，凭据不显示）\r\n配置读取：正常\r\n\r\n诊断不显示或复制用户名、密码、进程参数或原始错误；日志由运行层脱敏。\r\n配置损坏不会被覆盖：修复文件后重新载入。\r\n关闭窗口销毁前端，托盘与本应用任务继续运行；退出会停止本应用任务。",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "page-mounts",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 挂载",
+        "surface_id": 220,
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "sidebar-toggle-collapses",
+      "passed": true,
+      "observed": {
+        "before": [
+          821,
+          438,
+          1439,
+          478
+        ],
+        "after": [
+          661,
+          438,
+          1439,
+          478
+        ],
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "sidebar-toggle-restores",
+      "passed": true,
+      "observed": {
+        "restored": [
+          821,
+          438,
+          1439,
+          478
+        ],
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "page-settings",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 设置",
+        "surface_id": 406,
+        "text": "rclone：1.74.0\r\n程序：\\\\?\\E:\\items\\nether\\projects\\rclone_tray\\rclone\\rclone.exe\r\nWinFsp：已安装 · Remote：1 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "reduced-effects-checkbox",
+      "passed": true,
+      "observed": {
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "name": "reduced-effects-restored",
+      "passed": true,
+      "observed": {
+        "restored": 0
+      }
+    },
+    {
+      "name": "theme-preview-painted",
+      "passed": true,
+      "observed": {
+        "initial_index": 2,
+        "preview_index": 1,
+        "before_input_rgb": [
+          22,
+          24,
+          29
+        ],
+        "preview_input_rgb": [
+          236,
+          238,
+          244
+        ],
+        "save_enabled": true
+      }
+    },
+    {
+      "name": "theme-preview-not-saved",
+      "passed": true,
+      "observed": {
+        "sha256": "9f70da1dc854a90f090301263494e87c83ef2166bf0c0a8a0600048291c9b51e"
+      }
+    },
+    {
+      "name": "theme-discard-confirmation",
+      "passed": true,
+      "observed": "放弃本页输入？"
+    },
+    {
+      "name": "theme-cancel-restores-paint",
+      "passed": true,
+      "observed": {
+        "restored_input_rgb": [
+          22,
+          24,
+          29
+        ],
+        "initial_input_rgb": [
+          22,
+          24,
+          29
+        ],
+        "theme_index": 2,
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "page-mounts",
+      "passed": true,
+      "observed": {
+        "title": "rclone_tray · 挂载",
+        "surface_id": 220,
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "navigation": "pointer"
+      }
+    },
+    {
+      "name": "summary-3-visible",
+      "passed": true,
+      "observed": {
+        "text": "3 个挂载 · 0 个就绪 · 1 个 remote · 显示 3 个",
+        "list_count": 3
+      }
+    },
+    {
+      "name": "mount-selection",
+      "passed": true,
+      "observed": {
+        "index": 0,
+        "detail": "工作文档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/documents\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-documents\r\n\r\n已停止\r\nVFS writes · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：工作文档\r\n\r\n已停止",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "mount-0-never-started",
+      "passed": true,
+      "observed": "工作文档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/documents\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-documents\r\n\r\n已停止\r\nVFS writes · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：工作文档\r\n\r\n已停止"
+    },
+    {
+      "name": "mount-selection",
+      "passed": true,
+      "observed": {
+        "index": 1,
+        "detail": "归档备份 · 2026 项目长期存档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/archive/2026/projects/backups\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-archive\r\n\r\n已停止\r\nVFS full · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：归档备份 · 2026 项目长期存档\r\n\r\n已停止",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "mount-1-never-started",
+      "passed": true,
+      "observed": "归档备份 · 2026 项目长期存档\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/archive/2026/projects/backups\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-archive\r\n\r\n已停止\r\nVFS full · 本地模式 · 可读写\r\n自动挂载：关闭\r\n卷标：归档备份 · 2026 项目长期存档\r\n\r\n已停止"
+    },
+    {
+      "name": "mount-selection",
+      "passed": true,
+      "observed": {
+        "index": 2,
+        "detail": "只读资料\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/reference\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-reference\r\n\r\n已停止\r\nVFS minimal · 本地模式 · 只读\r\n自动挂载：关闭\r\n卷标：只读资料\r\n\r\n已停止",
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "mount-2-never-started",
+      "passed": true,
+      "observed": "只读资料\r\n\r\nRemote\r\nlocaldemo:C:/Users/BENINC~1/AppData/Local/Temp/rclone-native-capture-vurmsqrv/source/reference\r\n\r\n挂载位置\r\nC:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv\\mount-reference\r\n\r\n已停止\r\nVFS minimal · 本地模式 · 只读\r\n自动挂载：关闭\r\n卷标：只读资料\r\n\r\n已停止"
+    },
+    {
+      "name": "footer-idle-stopped",
+      "passed": true,
+      "observed": "1.74.0 · GUI 已停止 · 空闲"
+    },
+    {
+      "name": "sandbox-config-unchanged",
+      "passed": true,
+      "observed": {
+        "sha256": "9f70da1dc854a90f090301263494e87c83ef2166bf0c0a8a0600048291c9b51e"
+      }
+    },
+    {
+      "name": "real-exit-confirmation",
+      "passed": true,
+      "observed": {
+        "class": "#32770",
+        "pid": 35448,
+        "title": "退出 rclone_tray？",
+        "exit_command_id": 112,
+        "method": "pointer"
+      }
+    },
+    {
+      "name": "orderly-process-exit",
+      "passed": true,
+      "observed": {
+        "exit_code": 0,
+        "confirmation_id": 6
+      }
+    }
+  ],
+  "captures": [
+    {
+      "name": "mounts-no-results",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-mounts-no-results.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "mounts",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-mounts.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "service",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-service.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "settings",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-settings.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "about",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-about.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "editor",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-editor.png",
+      "hwnd": 1053148,
+      "bounds": [
+        842,
+        207,
+        1717,
+        1182
+      ],
+      "pixels": [
+        875,
+        975
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "mounts-narrow",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-mounts-narrow.png",
+      "hwnd": 5442874,
+      "bounds": [
+        830,
+        370,
+        1730,
+        1020
+      ],
+      "pixels": [
+        900,
+        650
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "mounts-narrow-scrolled",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-mounts-narrow-scrolled.png",
+      "hwnd": 5442874,
+      "bounds": [
+        830,
+        370,
+        1730,
+        1020
+      ],
+      "pixels": [
+        900,
+        650
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "service-narrow",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-service-narrow.png",
+      "hwnd": 5442874,
+      "bounds": [
+        830,
+        370,
+        1730,
+        1020
+      ],
+      "pixels": [
+        900,
+        650
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "settings-narrow",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-settings-narrow.png",
+      "hwnd": 5442874,
+      "bounds": [
+        830,
+        370,
+        1730,
+        1020
+      ],
+      "pixels": [
+        900,
+        650
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "about-narrow",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-about-narrow.png",
+      "hwnd": 5442874,
+      "bounds": [
+        830,
+        370,
+        1730,
+        1020
+      ],
+      "pixels": [
+        900,
+        650
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "sidebar-collapsed",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-sidebar-collapsed.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "settings-menu",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-settings-menu.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "light-preview",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-light-preview.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    },
+    {
+      "name": "settings-cancelled",
+      "path": "E:\\items\\nether\\projects\\rclone_tray\\docs\\evidence\\native-stencil-settings-cancelled.png",
+      "hwnd": 5442874,
+      "bounds": [
+        542,
+        170,
+        2017,
+        1220
+      ],
+      "pixels": [
+        1475,
+        1050
+      ],
+      "method": "foreground desktop crop"
+    }
+  ],
+  "pid": 35448,
+  "sandbox": "C:\\Users\\BENINC~1\\AppData\\Local\\Temp\\rclone-native-capture-vurmsqrv",
+  "sandbox_deleted": true
+}
