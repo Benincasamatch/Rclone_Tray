@@ -1,0 +1,36 @@
+// Shell icon and version properties for the executable (Explorer, Start menu,
+// shortcuts, taskbar, installer file properties). The tray and window icons are
+// created at runtime from the same ICO bytes.
+//
+// build.rs replaces the @PLACEHOLDER@ tokens with values from Cargo.toml before
+// compiling; keep the file valid RC syntax when editing.
+1 ICON "assets/icon.ico"
+
+1 VERSIONINFO
+FILEVERSION @VERSION_COMMA@
+PRODUCTVERSION @VERSION_COMMA@
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x40004L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "Benincasamatch"
+      VALUE "FileDescription", "rclone_tray"
+      VALUE "FileVersion", "@VERSION_STRING@"
+      VALUE "InternalName", "rclone_tray"
+      VALUE "LegalCopyright", "MIT License"
+      VALUE "OriginalFilename", "rclone_tray.exe"
+      VALUE "ProductName", "rclone_tray"
+      VALUE "ProductVersion", "@VERSION_STRING@"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END
