@@ -9,7 +9,6 @@ env/
 dist/
 build/
 *.spec
-!rclone_tray.spec
 
 # 第三方二进制（体积大，不纳入版本控制，自行放置）
 rclone/

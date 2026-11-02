@@ -76,13 +76,13 @@ rclone 可执行文件优先级：明确设置 → 打包 EXE 旁的 `rclone.exe
 
 ```powershell
 .\tools\build.ps1 -Test
-.\.venv\Scripts\python.exe tools\capture_ui.py --exe dist\rclone_tray-stencil.exe
-.\.venv\Scripts\python.exe tools\capture_ui.py --exe dist\rclone_tray-stencil.exe --light
+.\.venv\Scripts\python.exe tools\capture_ui.py --exe dist\rclone_tray.exe
+.\.venv\Scripts\python.exe tools\capture_ui.py --exe dist\rclone_tray.exe --light
 ```
 
-`tools/capture_ui.py` 使用 ctypes + Pillow 驱动真实原生窗口，逐页截图并检查搜索、键盘、主题草稿、窄窗口、编辑取消与退出；临时数据在结束后删除，不启动挂载或 GUI。需要解锁的交互桌面和匹配的进程完整性级别；低完整性工具进程无法切前台时，可通过 Windows 授权终端运行该脚本。应用运行不依赖 Python。截图与结果在 `docs/evidence/native-stencil-*.png`、`native-stencil-checks.json` 及对应浅色文件；本次产物身份见 `dist/stencil-build-manifest.json`。
+`tools/capture_ui.py` 使用 ctypes + Pillow 驱动真实原生窗口，逐页截图并检查搜索、键盘、主题草稿、窄窗口、编辑取消与退出；临时数据在结束后删除，不启动挂载或 GUI。需要解锁的交互桌面和匹配的进程完整性级别；低完整性工具进程无法切前台时，可通过 Windows 授权终端运行该脚本。应用运行不依赖 Python。截图与结果在 `docs/evidence/native-stencil-*.png`、`native-stencil-checks.json` 及对应浅色文件，最近一次更新模块烟测为 `native-2.1-update-about*.png`；产物身份见 `dist/build-manifest.json`。
 
-历史 Python 实现和旧截图保留用于追踪，不作为当前原生 UI 的启动或构建入口。
+应用本身不依赖 Python；仅 `tools/capture_ui.py` 验收截图工具需要 Python 与 Pillow（`python -m pip install -r requirements.txt`）。旧 Python 实现与 PyInstaller 配置已移除，历史验收截图与开发日志保留用于追踪。
 
 ## 文档
 

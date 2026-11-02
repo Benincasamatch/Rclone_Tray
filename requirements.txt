@@ -1,3 +1,2 @@
-pystray>=0.19.5
+# 仅 tools/capture_ui.py 验收截图工具使用；应用本身不依赖 Python。
 Pillow>=10.0.0
-plyer>=2.1.0
