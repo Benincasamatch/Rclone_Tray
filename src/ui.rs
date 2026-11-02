@@ -470,16 +470,16 @@ fn create_view(
         scroll_y: Cell::new(0),
     });
     let ptr = Rc::into_raw(view);
+    let title = if editor {
+        "挂载配置".to_string()
+    } else {
+        format!("rclone_tray · {}", page.label())
+    };
     let hwnd = unsafe {
         CreateWindowExW(
             WS_EX_CONTROLPARENT,
             wide(if editor { EDITOR_CLASS } else { WINDOW_CLASS }).as_ptr(),
-            wide(if editor {
-                "挂载配置"
-            } else {
-                "rclone_tray"
-            })
-            .as_ptr(),
+            wide(&title).as_ptr(),
             WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_VSCROLL | WS_HSCROLL,
             CW_USEDEFAULT,
             CW_USEDEFAULT,

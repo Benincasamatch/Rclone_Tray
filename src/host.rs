@@ -19,7 +19,8 @@ use windows_sys::Win32::UI::HiDpi::{
 use windows_sys::Win32::UI::Shell::{
     Shell_NotifyIconW, NIF_ICON, NIF_INFO, NIF_MESSAGE, NIF_SHOWTIP, NIF_TIP, NIIF_ERROR,
     NIIF_INFO, NIM_ADD,
-    NIM_DELETE, NIM_MODIFY, NIM_SETVERSION, NINF_KEY, NIN_SELECT, NOTIFYICONDATAW,
+    NIM_DELETE, NIM_MODIFY, NIM_SETVERSION, NINF_KEY, NIN_BALLOONUSERCLICK, NIN_SELECT,
+    NOTIFYICONDATAW,
     NOTIFYICON_VERSION_4,
 };
 use windows_sys::Win32::UI::WindowsAndMessaging::*;
@@ -296,6 +297,12 @@ unsafe extern "system" fn window_proc(
                 }
                 WM_CONTEXTMENU | WM_RBUTTONUP => {
                     tray_menu(pointer);
+                }
+                // The update balloon tells the user the download link lives on
+                // the About page; clicking it must land there instead of doing
+                // nothing.
+                NIN_BALLOONUSERCLICK => {
+                    show_frontend(pointer, Page::About, None);
                 }
                 _ => {}
             }
