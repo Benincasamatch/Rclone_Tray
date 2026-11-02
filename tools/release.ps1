@@ -35,5 +35,5 @@ try {
     }
     Write-Output "已创建 $tag。"
     Write-Output "发布资产：dist\rclone_tray_setup.exe、dist\rclone_tray_setup.exe.sha256、dist\build-manifest.json"
-    Write-Output '在 GitHub Release 中上传上述文件；更新检查读取 releases/latest 之外的完整列表，草稿和预发布会被忽略。'
+    Write-Output '在 GitHub Release 中上传上述文件；更新检查读取 Releases 列表，草稿和预发布会被忽略。'
 } finally { Pop-Location }
